@@ -62,6 +62,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/?verification=1'
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/?verification=1'
+ACCOUNT_ADAPTER = 'users.adapters.CustomUserAccountAdapter'
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Email backend settings for Django
