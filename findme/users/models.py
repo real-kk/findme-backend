@@ -5,7 +5,7 @@ from .managers import CustomUserManager
 class User(AbstractUser):
     first_name = None
     last_name = None
-    username = None
+    username = models.CharField('이름', max_length=50, null = True)
     email = models.EmailField('이메일', unique=True)
     password = models.CharField('비밀번호', max_length=128)
 
