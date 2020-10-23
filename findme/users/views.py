@@ -9,7 +9,7 @@ def EamilRedundantCheck(request) :
         try:
             userExist=len(User.objects.filter(email=email))
         except:
-            return HttpResponse('Server Error',status=403)
+            return HttpResponse('Server Error',status=404)
 
         
         if userExist ==False:
