@@ -8,7 +8,7 @@ class User(AbstractUser):
     username = models.CharField('이름', max_length=50, null = True)
     email = models.EmailField('이메일', unique=True)
     password = models.CharField('비밀번호', max_length=128)
-    user_type = models.BooleanField('유저타입', default=True) # {내담자 : 0, 상담사 : 1}
+    user_type = models.CharField('유저타입', max_length= 10, default='') # {내담자 : 0, 상담사 : 1}
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['user_type']

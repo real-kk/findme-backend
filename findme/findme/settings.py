@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'allauth',
     'allauth.account',
-    'allauth.socialaccount'
+    'allauth.socialaccount',
+    'corsheaders'
 ]
 
 SITE_ID = 1
@@ -160,3 +161,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CORS_ORIGIN_ALOOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
