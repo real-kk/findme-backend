@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .managers import CustomUserManager
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from rest_framework.authtoken.models import Token
+
 
 class User(AbstractUser):
     first_name = None
@@ -22,3 +26,8 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+@receiver(post_save, sender=User)
+def handle_user_save(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
