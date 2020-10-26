@@ -40,11 +40,13 @@ urlpatterns = [
         name='account_confirm_email'),
     path('users/', include('users.urls')),
     path('', include('diary.urls')),
-
     # API document generation with  drf_yasg
     path('swagger<str:format>', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/',  schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('docs/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc-v1')
+
+    path('tasks/', include('task.urls')),
+    path('', include('diary.urls'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
