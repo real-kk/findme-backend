@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'corsheaders',
     'diary',
-    'task'
+    'task',
+    'drf_yasg',
 ]
 
 SITE_ID = 1
