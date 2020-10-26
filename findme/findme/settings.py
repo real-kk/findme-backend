@@ -14,7 +14,7 @@ import os
 import json
 
 from findme.keys import email
-
+from findme.keys import s3
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -48,12 +48,31 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'corsheaders',
-    'diary'
+    'diary',
+    'storages',
+    'task'
 ]
 
 SITE_ID = 1
 
 AUTH_USER_MODEL = 'users.User'
+
+
+##############################
+#AWS
+AWS_ACCESS_KEY_ID =  s3.AWS_ACCESS_KEY_ID# .csv 파일에 있는 내용을 입력 Access key ID
+AWS_SECRET_ACCESS_KEY = s3.AWS_SECRET_ACCESS_KEY # .csv 파일에 있는 내용을 입력 Secret access key
+AWS_REGION = 'ap-northeast-2'
+
+#S3 Storages
+AWS_STORAGE_BUCKET_NAME = 'findme-app' # 설정한 버킷 이름
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (AWS_STORAGE_BUCKET_NAME,AWS_REGION)
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'path/to/store/my/files/')
+##############################
 
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
@@ -75,6 +94,9 @@ EMAIL_PORT = 587
 
 EMAIL_HOST_USER = email.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = email.EMAIL_HOST_PASSWORD
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

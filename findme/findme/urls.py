@@ -27,6 +27,8 @@ urlpatterns = [
     url(r'^accounts-rest/registration/account-confirm-email/(?P<key>.+)/$', confirm_email,
         name='account_confirm_email'),
     path('users/', include('users.urls')),
+    path('tasks/', include('task.urls')),
+
     path('', include('diary.urls'))
 ]
 
