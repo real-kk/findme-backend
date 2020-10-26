@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'corsheaders',
     'diary',
-    'storages',
     'task'
 ]
 

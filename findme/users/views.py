@@ -6,7 +6,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view
 from drf_yasg import openapi
 
-test_param = openapi.Parameter('test', openapi.IN_QUERY, type=openapi.TYPE_BOOLEAN)
+test_param = openapi.Parameter('test', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 
 @swagger_auto_schema(method='get', manual_parameters=[test_param])
 @api_view(['GET'])
