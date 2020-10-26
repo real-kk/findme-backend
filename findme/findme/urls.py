@@ -9,7 +9,8 @@ from rest_framework.permissions import AllowAny
 from drf_yasg import openapi
 
 schema_url_v1_patterns = [
-    url(r'^diary/v1', include(('diary.urls','diary'), namespace='diary')),
+    url(r'', include(('diary.urls', 'diary'), namespace='diary')),
+    url(r'', include(('users.urls','users'), namespace='email')),
 ]
 
 schema_view = get_schema_view(
@@ -18,7 +19,9 @@ schema_view = get_schema_view(
       default_version='v1',
       description =
       '''
-      2020 SW캡스톤디자인 real kk팀 - Find Me 백엔드 API입니다.
+      **2020 SW캡스톤디자인 real kk팀 - Find Me 백엔드 API입니다.**
+
+      - API BASE URL : http://ec2-13-209-32-113.ap-northeast-2.compute.amazonaws.com:8000/
       ''',
       contact=openapi.Contact(email="capstone4824@gmail.com"),
       license=openapi.License(name="BSD License"),
