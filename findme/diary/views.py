@@ -9,8 +9,13 @@ from .serializers import DiarySerializer
 from django.core.files.images import ImageFile
 from .models import Diary
 import io
+from rest_framework.authentication import TokenAuthentication
+from  rest_framework.permissions import IsAuthenticated
 
 class Text_extract_wordcloud(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         serializer = DiarySerializer(data=request.data)
         if serializer.is_valid():
@@ -31,7 +36,7 @@ class Text_extract_wordcloud(APIView):
             f = io.BytesIO()
             plt.savefig(f, format="png")
             image = ImageFile(f)
-            diary = Diary(title=request.data.get('title'), content=request.data.get('content'))
+            diary = Diary(title=request.data.get('title'), content=request.data.get('content'), client=request.user)
             diary.image.save('test.png', image)
             diary.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
