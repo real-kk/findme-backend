@@ -3,4 +3,5 @@ from users import views
 
 urlpatterns = [
     path('email', views.EamilRedundantCheck),
+    path('', views.getUserListsByUserType),
 ]
