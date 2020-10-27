@@ -62,16 +62,13 @@ AUTH_USER_MODEL = 'users.User'
 #AWS
 AWS_ACCESS_KEY_ID =  s3.AWS_ACCESS_KEY_ID# .csv 파일에 있는 내용을 입력 Access key ID
 AWS_SECRET_ACCESS_KEY = s3.AWS_SECRET_ACCESS_KEY # .csv 파일에 있는 내용을 입력 Secret access key
-AWS_REGION = 'ap-northeast-2'
+AWS_REGION = s3.AWS_REGION
 
 #S3 Storages
-AWS_STORAGE_BUCKET_NAME = 'findme-app' # 설정한 버킷 이름
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (AWS_STORAGE_BUCKET_NAME,AWS_REGION)
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
+AWS_STORAGE_BUCKET_NAME =  s3.AWS_STORAGE_BUCKET_NAME # 설정한 버킷 이름
+AWS_S3_CUSTOM_DOMAIN = s3.AWS_S3_CUSTOM_DOMAIN
+AWS_S3_OBJECT_PARAMETERS = s3.AWS_S3_OBJECT_PARAMETERS
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'path/to/store/my/files/')
 ##############################
 
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
