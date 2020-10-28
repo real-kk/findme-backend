@@ -8,3 +8,9 @@ class DiarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Diary
         fields = ('title', 'client_username', 'create_date', 'content')
+
+
+class DiaryListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Diary
+        fields = ('title', 'create_date', 'content', 'sentiment_score')

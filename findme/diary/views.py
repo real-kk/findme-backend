@@ -5,7 +5,7 @@ from wordcloud import WordCloud
 from konlpy.tag import Okt
 from collections import Counter
 import matplotlib.pyplot as plt
-from .serializers import DiarySerializer
+from .serializers import DiarySerializer, DiaryListSerializer
 from django.core.files.images import ImageFile
 from .models import Diary
 import io
@@ -63,3 +63,7 @@ class Text_extract_wordcloud(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+    def get(self, request):
+        diary = Diary.objects.filter(client=request.user)
+        serializer = DiaryListSerializer(diary, many=True) #diary.title, diary.create_date, diary.content, diary.sentiment_score)
+        return Response(serializer.data)
