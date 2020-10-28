@@ -3,5 +3,5 @@ from django.urls import path
 
 
 urlpatterns = [
-    path('videos', views.Task.as_view(), name='task')
+    path('videos', views.TaskUpload.as_view(), name='taskUpload')
 ]
