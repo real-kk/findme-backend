@@ -1,3 +1,4 @@
 from django.contrib import admin
+from counsel import models
 
-# Register your models here.
+admin.site.register(models.Counsel)
