@@ -7,6 +7,8 @@ from .serializer import CounselSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from users.models import User
+from datetime import datetime
+
 class Counsel_application(APIView):
     """
     신청서 작성 API
@@ -27,12 +29,11 @@ class Counsel_application(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-
-        serializer = CounselSerializer(data=request.data)
-        if serializer.is_valid():
-            selected_counselor_email= request.data.get("counselor")
-            counselor = User.objects.get(email=selected_counselor_email)
-            counsel = Counsel( time_table=request.data.get("time_table") ,major=request.data.get("major"),client=request.user,counselor=counselor , phone_number=request.data.get("phone_number"),student_number=request.data.get("student_number"))
+        selected_counselor_email= request.data.get("counselor")
+        counselor = User.objects.get(email=selected_counselor_email)
+        counsel = Counsel( time_table=request.data.get("time_table") ,major=request.data.get("major"),client=request.user,counselor=counselor , create_date=datetime.now(),phone_number=request.data.get("phone_number"),student_number=request.data.get("student_number"))
+        serializer= CounselSerializer(counsel)
+        if serializer.is_valid: 
             counsel.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
