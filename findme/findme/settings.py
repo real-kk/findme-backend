@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'diary',
     'task',
+    'storages',
     'drf_yasg',
 ]
 
