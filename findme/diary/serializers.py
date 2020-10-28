@@ -16,7 +16,7 @@ class DiaryListSerializer(serializers.ModelSerializer):
     create_date = serializers.SerializerMethodField()
 
     def get_create_date(self, obj):
-        return obj.create_date.astimezone(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H-%M-%S')
+        return obj.create_date.astimezone(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M')
     class Meta:
         model = Diary
         fields = ('title', 'create_date', 'content', 'sentiment_score')
