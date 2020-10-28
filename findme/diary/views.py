@@ -65,5 +65,5 @@ class Text_extract_wordcloud(APIView):
         
     def get(self, request):
         diary = Diary.objects.filter(client=request.user)
-        serializer = DiaryListSerializer(diary, many=True) #diary.title, diary.create_date, diary.content, diary.sentiment_score)
+        serializer = DiaryListSerializer(diary, many=True)
         return Response(serializer.data)
