@@ -49,12 +49,12 @@ def getUserListsByUserType(request):
     if request.method == "GET":
         user_type = request.GET.get("user_type")
         try:
-            list=User.objects.filter(user_type=user_type)
-            userExist= len(list)
+            list = User.objects.filter(user_type=user_type)
+            userExist = len(list)
         except:
             return HttpResponse('Server Error',status=404)
-        data = json.loads(serialize('json', list,fields=('email','user_type','realname')))
-        if userExist ==False:
+        data = json.loads(serialize('json', list,fields=('email','user_type','username')))
+        if userExist == False:
             return HttpResponse('Users Not Exists',status=403)
         else:
             return JsonResponse({'message':'Users Exists','users': data},status=200)
