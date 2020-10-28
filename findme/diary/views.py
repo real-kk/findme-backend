@@ -10,8 +10,11 @@ from django.core.files.images import ImageFile
 from .models import Diary
 import io
 from rest_framework.authentication import TokenAuthentication
-from  rest_framework.permissions import IsAuthenticated
-
+from rest_framework.permissions import IsAuthenticated
+from google.cloud import language_v1
+from datetime import datetime
+from google.oauth2 import service_account
+import os 
 class Text_extract_wordcloud(APIView):
     """
     감정일기 작성 및 워드클라우드 생성 API
@@ -32,6 +35,12 @@ class Text_extract_wordcloud(APIView):
         serializer = DiarySerializer(data=request.data)
         if serializer.is_valid():
             text = request.data['content'].encode("utf-8")
+            # analyze sentiment
+            credentials = service_account.Credentials.from_service_account_file(os.path.abspath('.') + '\\diary\\junctionx-3584b0288638.json')
+            client = language_v1.LanguageServiceClient(credentials=credentials)
+            document = language_v1.Document(content=text, type_=language_v1.Document.Type.PLAIN_TEXT)
+            sentiment = client.analyze_sentiment(request={'document': document}).document_sentiment
+            # generate wordcloud
             okt = Okt()
             morphs = okt.pos(text)
             noun_adj_list = []
@@ -48,7 +57,7 @@ class Text_extract_wordcloud(APIView):
             f = io.BytesIO()
             plt.savefig(f, format="png")
             image = ImageFile(f)
-            diary = Diary(title=request.data.get('title'), content=request.data.get('content'), client=request.user)
+            diary = Diary(title=request.data.get('title'), content=request.data.get('content'), client=request.user, create_date=datetime.now, sentiment_score=sentiment.score)
             diary.image.save('test.png', image)
             diary.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

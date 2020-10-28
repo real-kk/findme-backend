@@ -8,6 +8,7 @@ class Diary(models.Model):
     create_date = models.DateTimeField(auto_now_add=True, null=True)
     content = models.CharField(max_length=1000)
     image = models.ImageField(upload_to="image/", blank=True, null=True)
+    sentiment_score = models.FloatField(verbose_name="텍스트감정분석결과", null=True)
 
     class Meta:
         verbose_name = '감정일기'
