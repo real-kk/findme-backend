@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Diary
+from .models import Diary, DiaryWholeContent
 from rest_framework.serializers import ModelSerializer, ReadOnlyField
 import datetime
 from pytz import timezone
@@ -19,4 +19,10 @@ class DiaryListSerializer(serializers.ModelSerializer):
         return obj.create_date.astimezone(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M')
     class Meta:
         model = Diary
-        fields = ('title', 'create_date', 'content', 'sentiment_score')
+        fields = ('title', 'create_date', 'content')
+
+class WholeContentSerializer(serializers.ModelSerializer):
+    client_username = ReadOnlyField(source="client.username")
+    class Meta:
+        model = DiaryWholeContent
+        fields = ('client_username', 'image')

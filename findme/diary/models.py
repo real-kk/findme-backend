@@ -13,3 +13,10 @@ class Diary(models.Model):
     class Meta:
         verbose_name = '감정일기'
     
+class DiaryWholeContent(models.Model):
+    client = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=True)
+    whole_content = models.CharField(max_length=10000, null=True)
+    image = models.ImageField(upload_to="wordcloud/", blank=True, null=True)
+
+    class Meta:
+        verbose_name = "감정일기 내용 모음"
