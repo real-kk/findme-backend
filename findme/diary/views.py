@@ -36,7 +36,7 @@ class Text_extract_wordcloud(APIView):
         if serializer.is_valid():
             text = request.data['content'].encode("utf-8")
             # analyze sentiment
-            credentials = service_account.Credentials.from_service_account_file(os.path.abspath('.') + '\\diary\\junctionx-3584b0288638.json')
+            credentials = service_account.Credentials.from_service_account_file(os.path.abspath('.') + '/diary/junctionx-3584b0288638.json')
             client = language_v1.LanguageServiceClient(credentials=credentials)
             document = language_v1.Document(content=text, type_=language_v1.Document.Type.PLAIN_TEXT)
             sentiment = client.analyze_sentiment(request={'document': document}).document_sentiment
