@@ -30,8 +30,10 @@ class Counsel_application(APIView):
 
         serializer = CounselSerializer(data=request.data)
         if serializer.is_valid():
-            print(User.objects.all())
-            counsel = Counsel()
+            selected_counselor_email= request.data.get("counselor")
+            counselor = User.objects.get(email=selected_counselor_email)
+            counsel = Counsel( time_table=request.data.get("time_table") ,major=request.data.get("major"),client=request.user,counselor=counselor , phone_number=request.data.get("phone_number"),student_number=request.data.get("student_number"))
+            counsel.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
