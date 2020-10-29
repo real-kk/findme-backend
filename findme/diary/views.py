@@ -126,14 +126,14 @@ class Text_extract_linegraph(APIView):
 
     def post(self, request):
         scores = [score.get("sentiment_score", -1) for score in Diary.objects.filter(client=request.user).values("sentiment_score")]
-        x = [x_value for x_value in range(len(scores))]
+        x = [x_value for x_value in range(1, 8)]
         plt.title('Diary Sentiment Analysis')
-        plt.plot(x, scores)
-        plt.figure(figsize=(22, 22))
-        plt.axis([0, 7, 0, 1])
-        f = io.BytesIO()
-        plt.savefig(f, format="png")
-        graph_image = ImageFile(f)
+        plt.plot(x, scores[-7:], 'r')
+        plt.axis([1, 7, 0, 1])
+        fig = plt.gcf()
+        file_io = io.BytesIO()
+        fig.savefig(file_io, format="png")
+        graph_image = ImageFile(file_io)
         try:
             line_graph = LineGraph.objects.get(client=request.user)
         except LineGraph.DoesNotExist:
