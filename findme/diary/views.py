@@ -14,7 +14,26 @@ from rest_framework.permissions import IsAuthenticated
 from google.cloud import language_v1
 from datetime import datetime
 from google.oauth2 import service_account
-import os 
+import os
+
+def make_wordcloud(text):
+    okt = Okt()
+    morphs = okt.pos(text)
+    noun_adj_list = []
+    for word, tag in morphs:
+        if tag in ['Noun', 'Adjective']:
+            noun_adj_list.append(word)
+    counts = Counter(noun_adj_list)
+    tags = counts.most_common(10)
+    wordcloud = WordCloud(font_path='/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf', background_color="white", width=300, height=300)
+    cloud = wordcloud.generate_from_frequencies(dict(tags))
+    plt.figure(figsize=(22, 22))
+    plt.imshow(cloud, interpolation='lanczos')
+    plt.axis('off')
+    f = io.BytesIO()
+    plt.savefig(f, format="png")
+    image = ImageFile(f)
+    return image
 class Text_extract_wordcloud(APIView):
     """
     감정일기 작성 및 워드클라우드 생성 API
@@ -31,7 +50,6 @@ class Text_extract_wordcloud(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-
         serializer = DiarySerializer(data=request.data)
         if serializer.is_valid():
             text = request.data['content'].encode('euc-kr').decode('euc-kr')
@@ -40,23 +58,7 @@ class Text_extract_wordcloud(APIView):
             client = language_v1.LanguageServiceClient(credentials=credentials)
             document = language_v1.Document(content=text, type_=language_v1.Document.Type.PLAIN_TEXT)
             sentiment = client.analyze_sentiment(request={'document': document}).document_sentiment
-            # generate wordcloud
-            okt = Okt()
-            morphs = okt.pos(text)
-            noun_adj_list = []
-            for word, tag in morphs:
-                if tag in ['Noun', 'Adjective']:
-                    noun_adj_list.append(word)
-            counts = Counter(noun_adj_list)
-            tags = counts.most_common(10)
-            wordcloud = WordCloud(font_path='/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf', background_color="white", width=300, height=300)
-            cloud = wordcloud.generate_from_frequencies(dict(tags))
-            plt.figure(figsize=(22, 22))
-            plt.imshow(cloud, interpolation='lanczos')
-            plt.axis('off')
-            f = io.BytesIO()
-            plt.savefig(f, format="png")
-            image = ImageFile(f)
+            image = make_wordcloud(text)
             # Diary Model 
             diary = Diary(title=request.data.get('title'), content=request.data.get('content'), client=request.user, create_date=datetime.now(), sentiment_score=sentiment.score)
             diary.image.save('test' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + '.png', image)
@@ -90,23 +92,7 @@ class Whole_content_to_wordcloud(APIView):
             serializer = WholeContentSerializer(whole_content)
             DiaryWholeContent.objects.filter(client=request.user)[0].delete()
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
-        # Generate whole wordcloud
-        okt = Okt()
-        morphs = okt.pos(whole_content.whole_content)
-        noun_adj_list = []
-        for word, tag in morphs:
-            if tag in ['Noun', 'Adjective']:
-                noun_adj_list.append(word)
-        counts = Counter(noun_adj_list)
-        tags = counts.most_common(10)
-        wordcloud = WordCloud(font_path='/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf', background_color="white", width=300, height=300)
-        cloud = wordcloud.generate_from_frequencies(dict(tags))
-        plt.figure(figsize=(22, 22))
-        plt.imshow(cloud, interpolation='lanczos')
-        plt.axis('off')
-        f = io.BytesIO()
-        plt.savefig(f, format="png")
-        image = ImageFile(f)
+        image = make_wordcloud(whole_content.whole_content)
         whole_content.image.save('wordcloud' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + 'png', image)
         whole_content.save()
         serializer = WholeContentSerializer(whole_content)
@@ -119,7 +105,6 @@ class Text_extract_linegraph(APIView):
     def post(self, request):
         scores = [score.get("sentiment_score", -1) for score in Diary.objects.filter(client=request.user).values("sentiment_score")]
         x = [x_value for x_value in range(len(scores))]
-
         plt.title('Diary Sentiment Analysis')
         plt.plot(x, scores)
         plt.axis([0, 7, 0, 1])
