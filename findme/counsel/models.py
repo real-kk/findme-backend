@@ -24,7 +24,7 @@ class Counsel(models.Model):
         now = str(self.create_date)
         return self.client.username+'신청서'+" "+now[:10]
 
-class CounselDate(models.Model):
+class RegisterCounselDate(models.Model):
     counselor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=True)
     client = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=False)
     counsel_date = models.DateTimeField(null=True)
