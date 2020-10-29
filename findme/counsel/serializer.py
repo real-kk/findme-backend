@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ReadOnlyField
-from .models import Counsel, CounselDate
+from .models import Counsel, RegisterCounselDate
 class CounselSerializer(serializers.Serializer):
     client_username = ReadOnlyField(source="client.username")
     counselor_username = ReadOnlyField(source="counselor.username")
@@ -32,5 +32,11 @@ class CounselDateSerializer(serializers.Serializer):
     counsel_date = serializers.DateTimeField(allow_null=True)
 
     class Meta:
-        model = CounselDate
+        model = RegisterCounselDate
         fields = ('counselor_username', 'client_username', 'counsel_date')
+
+class CounselClientSerializer(serializers.Serializer):
+    client_username = ReadOnlyField(source="client.username")
+    class Meta:
+        model = RegisterCounselDate
+        fields = ('client_username',)
