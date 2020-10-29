@@ -2,8 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.files.images import ImageFile
-from .models import Counsel
-from .serializer import CounselSerializer
+from .models import Counsel, CounselDate
+from .serializer import CounselSerializer, CounselListSerializer, CounselDateSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from users.models import User
@@ -41,5 +41,21 @@ class Counsel_application(APIView):
         
     def get(self, request):
         counsel = Counsel.objects.filter(client=request.user)
-        serializer = CounselSerializer(counsel, many=True)
+        serializer = CounselListSerializer(counsel, many=True)
         return Response(serializer.data)
+
+class UpdateCounselForDate(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        serializer = CounselDateSerializer(data=request.data)
+        if serializer.is_valid():
+            selected_client_email = request.data.get("client")
+            client = User.objects.get(email=selected_client_email)
+            counsel_date = CounselDate(counselor=request.user, client=client, counsel_date=request.data.get("counsel_date"))
+            counsel_date.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        

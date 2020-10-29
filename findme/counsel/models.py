@@ -23,3 +23,12 @@ class Counsel(models.Model):
     def __str__(self):
         now = str(self.create_date)
         return self.client.username+'신청서'+" "+now[:10]
+
+class CounselDate(models.Model):
+    counselor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=True)
+    client = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=False)
+    counsel_date = models.DateTimeField(null=True)
+
+    class Meta:
+        verbose_name = "등록된 상담"
+    
