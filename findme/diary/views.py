@@ -126,6 +126,7 @@ class Text_extract_linegraph(APIView):
 
     def post(self, request):
         scores = [score.get("sentiment_score", -1) for score in Diary.objects.filter(client=request.user).values("sentiment_score")]
+        plt.figure(figsize=(8,8))
         if len(scores) == 1:
             x = [x_value for x_value in range(1, len(scores) + 1)]
             plt.plot(x, scores, 'ro')
