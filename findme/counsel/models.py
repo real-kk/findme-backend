@@ -16,6 +16,7 @@ class Counsel(models.Model):
     time_table = models.ImageField(upload_to=upload_image_to, blank=True, null=True)
     create_date = models.DateTimeField(auto_now_add=True, null=True)
     # create_date.editable=True
+    content = models.CharField(max_length=100, null=True)
     class Meta:
         verbose_name = '신청서'
     
