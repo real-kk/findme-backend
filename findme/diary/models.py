@@ -20,3 +20,7 @@ class DiaryWholeContent(models.Model):
 
     class Meta:
         verbose_name = "감정일기 내용 모음"
+
+class LineGraph(models.Model):
+    client = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=True)
+    line_graph = models.ImageField(upload_to="linegraph/", blank=True, null=True)

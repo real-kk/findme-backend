@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Diary, DiaryWholeContent
+from .models import Diary, DiaryWholeContent, LineGraph
 from rest_framework.serializers import ModelSerializer, ReadOnlyField
 import datetime
 from pytz import timezone
@@ -26,3 +26,10 @@ class WholeContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = DiaryWholeContent
         fields = ('client_username', 'image')
+
+class LineGraphSerializer(serializers.ModelSerializer):
+    client_username = ReadOnlyField(source="client.username")
+
+    class Meta:
+        model = LineGraph
+        fields = ('client_username', 'line_graph')

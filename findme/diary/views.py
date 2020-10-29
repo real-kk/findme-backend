@@ -5,9 +5,9 @@ from wordcloud import WordCloud
 from konlpy.tag import Okt
 from collections import Counter
 import matplotlib.pyplot as plt
-from .serializers import DiarySerializer, DiaryListSerializer, WholeContentSerializer
+from .serializers import DiarySerializer, DiaryListSerializer, WholeContentSerializer, LineGraphSerializer
 from django.core.files.images import ImageFile
-from .models import Diary, DiaryWholeContent
+from .models import Diary, DiaryWholeContent, LineGraph
 import io
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -58,8 +58,8 @@ class Text_extract_wordcloud(APIView):
             plt.savefig(f, format="png")
             image = ImageFile(f)
             # Diary Model 
-            diary = Diary(title=request.data.get('title'), content=request.data.get('content'), client=request.user, create_date=datetime.now, sentiment_score=sentiment.score)
-            diary.image.save('test.png', image)
+            diary = Diary(title=request.data.get('title'), content=request.data.get('content'), client=request.user, create_date=datetime.now(), sentiment_score=sentiment.score)
+            diary.image.save('test' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + '.png', image)
             diary.save()
             # Whole Content Model Refresh
             try:
@@ -107,7 +107,30 @@ class Whole_content_to_wordcloud(APIView):
         f = io.BytesIO()
         plt.savefig(f, format="png")
         image = ImageFile(f)
-        whole_content.image.save('test.png', image)
+        whole_content.image.save('wordcloud' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + 'png', image)
         whole_content.save()
         serializer = WholeContentSerializer(whole_content)
+        return Response(serializer.data)
+
+class Text_extract_linegraph(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        scores = [score.get("sentiment_score", -1) for score in Diary.objects.filter(client=request.user).values("sentiment_score")]
+        x = [x_value for x_value in range(len(scores))]
+
+        plt.title('Diary Sentiment Analysis')
+        plt.plot(x, scores)
+        plt.axis([0, 7, 0, 1])
+        f = io.BytesIO()
+        plt.savefig(f, format="png")
+        graph_image = ImageFile(f)
+        try:
+            line_graph = LineGraph.objects.get(client=request.user)
+        except LineGraph.DoesNotExist:
+            line_graph = LineGraph(client=request.user)
+        line_graph.line_graph.save("line_graph" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".png", graph_image)
+        line_graph.save()
+        serializer = LineGraphSerializer(line_graph)
         return Response(serializer.data)
