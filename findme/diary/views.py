@@ -126,9 +126,13 @@ class Text_extract_linegraph(APIView):
 
     def post(self, request):
         scores = [score.get("sentiment_score", -1) for score in Diary.objects.filter(client=request.user).values("sentiment_score")]
-        x = [x_value for x_value in range(1, 8)]
         plt.title('Diary Sentiment Analysis')
-        plt.plot(x, scores[-7:], 'r')
+        if len(scores) < 7:
+            x = [x_value for x_value in range(1, len(scores) + 1)]
+            plt.plot(x, scores, 'r')
+        else:
+            x = [x_value for x_value in range(1, 8)]
+            plt.plot(x, scores[-7:], 'r')
         plt.axis([1, 7, 0, 1])
         fig = plt.gcf()
         file_io = io.BytesIO()
