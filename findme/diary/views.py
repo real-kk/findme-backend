@@ -93,7 +93,7 @@ class Whole_content_to_wordcloud(APIView):
             DiaryWholeContent.objects.filter(client=request.user)[0].delete()
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
         image = make_wordcloud(whole_content.whole_content)
-        whole_content.image.save('wordcloud' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + 'png', image)
+        whole_content.image.save('wordcloud' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + '.png', image)
         whole_content.save()
         serializer = WholeContentSerializer(whole_content)
         return Response(serializer.data)
