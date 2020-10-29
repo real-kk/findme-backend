@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "swift-library-292103",
+  "private_key_id": "3584b0288638b86cef911c60274a7c41ce093bc8",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCswtM/PnUJGZOL\nhLjXDv6F15/fqDKYXcWTWJ9zkKBoavjFhpEDLo0w9Y4GUgWk7ETl9E11SEAqwOoB\nKKJdCviNFEbfASsbTMl+hvaYQqmMls8bZxRJZglDLR+aJlMGDEkILhIhIzdDvoiy\nYX8iqHLIonQ9Vh8IJT17rjswjNPQwzQreEgl3Tyq6qxHYlv0ZVsRJ1ixI4as4A9L\nUSNEmm0Geo+OaYtAojiSTfRWuwY9jDCij/M9SgbHUk6I1QVyPpM1j3+tMm7whm4y\nVb32q2NVVL/PApCEYs2ytHN4LQ1SlO529xyDx973trhlfZI293NCHRQLz6LEWDTI\npGJX5DsDAgMBAAECggEAFMYrXNQygpueuwzZ+pJaV4HW6bAcwBGr68yhBTvY7iAe\n4LG5HPwrYj3E4aGvUruj3/sBQsnOCCtrzXkzZ6N6wTbfps/0fQiTb4bkfulVNgtU\ncDke9AyJr0LtJT4tMZxR6TfmWjG/4teLMdgOJP7DKWPPkn3upq4ZDJb7lcT5cNrg\nLA2E7ro3t8AX8xJjxIAnitZ4f/1cdmRh9AbzB4/g+KlZf479hfiUnADZRTYs/+gy\nbm8+5HBBJdbHVnuYRuQTkyryDzlWwgvlqLv9AuW8kY8Ysk50LtTDrV02vgk7D/wg\npQ+UXS++ToziZ2KfnFlAbDB5fdfSCENW1vzxU604UQKBgQDlMSfkvs2wLJmPRDIH\nWs6R3yEvrNPW2+wDpv2kO2DtnhlddLzd0+rJy7FzVgtT+hyR+iT6KeHbHpuGyhwF\nhrFbRByeSUpM07RB47THaWCVU8jeowVLuHsWzlkTSOeclWwqAkQX7gdmvH5A9W+N\nt9UU2Pyg+QSenHRkePx8bXAlZQKBgQDA9+uRSNAPO+cjBEhBUYpwvX2d3BQHytyw\nTbx+zYgi5VOXHpMcA6LtS4i7zDsc+7x3nNIOuIVritSguPmeiYuJLdpmvqUV8KRx\nwqG6tU9/9St6j8mwYw65ApqFsjpsx5SjlhCBaLmIz4GiVIoZD2ygBqXR3+xDSAxi\nMxOVxGKsRwKBgQCpZd6dlGVE3IIXQQlVJEnfyTKnIS9l9CCKRofcNkMa/aqzx4+8\nyWAVDKe4npU62Xb6cg+YkxIrOYEsa/+wGfDGix434+W1yRfHR30bkohfdpDV9Vn5\nsH3RymxN86m0s0BCAHDB2x2/UnximMV90qz8frCibct7TBo/FKlRcjXcfQKBgCTH\nW/ut4BH3Pd+bslXYv8UrKKUMzDiL/rIPruyQKfFUujDkX++H9ea6bc41Z9LnXA2E\nMzkhDDTqGgqkFteTqae0uJq6nWZoHj+cdAzM/+EIjofmne9jgevbRi5TQPV4uKjR\nMkYn+qzLuA6DhGqwWOjLO5Gb10Efm1SgHYx/CLuDAoGAdHC2RzPkkzVD84PrhS3c\nIGTI8D9Caq/OP+C8J/QNXnUbymfqKugfB0mhcc3G5QA74S+OiFEbmoweryWXqttL\nLitZSBbkWIL6fG3iR/WYuxoI64eywMRCUCrKIPJTWXLiLBmfbQeWCRQ5JD5xfr3L\nKO/NBvSqciDJDohTGNbhcN0=\n-----END PRIVATE KEY-----\n",
+  "client_email": "findme-capstone@swift-library-292103.iam.gserviceaccount.com",
+  "client_id": "100277576484998003041",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/findme-capstone%40swift-library-292103.iam.gserviceaccount.com"
+}

@@ -126,8 +126,10 @@ class Text_extract_linegraph(APIView):
 
     def post(self, request):
         scores = [score.get("sentiment_score", -1) for score in Diary.objects.filter(client=request.user).values("sentiment_score")]
-        plt.title('Diary Sentiment Analysis')
-        if len(scores) < 7:
+        if len(scores) == 1:
+            x = [x_value for x_value in range(1, len(scores) + 1)]
+            plt.plot(x, scores, 'ro')
+        elif len(scores) < 7:
             x = [x_value for x_value in range(1, len(scores) + 1)]
             plt.plot(x, scores, 'r')
         else:
@@ -144,5 +146,6 @@ class Text_extract_linegraph(APIView):
             line_graph = LineGraph(client=request.user)
         line_graph.line_graph.save("line_graph" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".png", graph_image)
         line_graph.save()
+        plt.cla()
         serializer = LineGraphSerializer(line_graph)
         return Response(serializer.data)
