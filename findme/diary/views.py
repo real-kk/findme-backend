@@ -36,7 +36,7 @@ def make_wordcloud(text):
     return image
 class Text_extract_wordcloud(APIView):
     """
-    감정일기 작성 및 워드클라우드 생성 API
+    감정일기 작성 API
 
     ---
     # /diaries/
@@ -58,10 +58,8 @@ class Text_extract_wordcloud(APIView):
             client = language_v1.LanguageServiceClient(credentials=credentials)
             document = language_v1.Document(content=text, type_=language_v1.Document.Type.PLAIN_TEXT)
             sentiment = client.analyze_sentiment(request={'document': document}).document_sentiment
-            image = make_wordcloud(text)
             # Diary Model 
             diary = Diary(title=request.data.get('title'), content=request.data.get('content'), client=request.user, create_date=datetime.now(), sentiment_score=sentiment.score)
-            diary.image.save('test' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + '.png', image)
             diary.save()
             # Whole Content Model Refresh
             try:
@@ -107,6 +105,7 @@ class Text_extract_linegraph(APIView):
         x = [x_value for x_value in range(len(scores))]
         plt.title('Diary Sentiment Analysis')
         plt.plot(x, scores)
+        plt.figure(figsize=(22, 22))
         plt.axis([0, 7, 0, 1])
         f = io.BytesIO()
         plt.savefig(f, format="png")
