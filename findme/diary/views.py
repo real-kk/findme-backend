@@ -35,21 +35,21 @@ def make_wordcloud(text):
     image = ImageFile(f)
     return image
 class Text_extract_wordcloud(APIView):
-    """
-    감정일기 작성 API
-
-    ---
-    # /diaries/
-    ## headers
-        - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
-    ## body parameter
-        - title : 감정일기 제목
-        - content : 감정일기 내용
-    """
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        """
+        감정일기 작성
+
+        ---
+        # /diaries/
+        ## headers
+            - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
+        ## body parameter
+            - title : 감정일기 제목
+            - content : 감정일기 내용
+        """
         serializer = DiarySerializer(data=request.data)
         if serializer.is_valid():
             text = request.data['content'].encode('euc-kr').decode('euc-kr')
@@ -73,11 +73,27 @@ class Text_extract_wordcloud(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def get(self, request):
+        """
+        감정일기 조회
+
+        ---
+        # /diaries/
+        ## headers
+            - Authorization : Token "key 값" 
+        """
         diary = Diary.objects.filter(client=request.user)
         serializer = DiaryListSerializer(diary, many=True)
         return Response(serializer.data)
 
 class Whole_content_to_wordcloud(APIView):
+    """
+    워드클라우드 생성
+
+    ---
+    # /whole_content/
+    ## headers
+        - Authorization : Token "key 값" 
+    """
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -97,6 +113,14 @@ class Whole_content_to_wordcloud(APIView):
         return Response(serializer.data)
 
 class Text_extract_linegraph(APIView):
+    """
+    꺾은선그래프 생성
+
+    ---
+    # /linegraph
+    ## headers
+        - Authorization : Token "key 값" 
+    """
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
