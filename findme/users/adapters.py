@@ -19,5 +19,6 @@ class CustomUserAccountAdapter(DefaultAccountAdapter):
        #     user.set_unusable_password()
         user = super().save_user(request, user, form, False)
         user_field(user, 'user_type', request.data.get('user_type'))
+        user_field(user, 'introduce', request.data.get('introduce'))
         user.save()
         return user
