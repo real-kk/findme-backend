@@ -1,4 +1,3 @@
-
 from django.shortcuts import render
 from .models import User
 from django.http import HttpResponse,JsonResponse
@@ -8,6 +7,12 @@ from drf_yasg import openapi
 import json
 from django.core.serializers import serialize
 test_param = openapi.Parameter('test', openapi.IN_QUERY, type=openapi.TYPE_STRING)
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializers import UserTypeSerializer
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 
 @swagger_auto_schema(method='get', manual_parameters=[test_param])
 @api_view(['GET'])
@@ -58,3 +63,11 @@ def getUserListsByUserType(request):
             return HttpResponse('Users Not Exists',status=403)
         else:
             return JsonResponse({'message':'Users Exists','users': data},status=200)
+
+class getEachUserType(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_type = User.objects.filter(email=request.user).values('user_type')[0]
+        return JsonResponse(user_type, status=200)
