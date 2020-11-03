@@ -9,7 +9,6 @@ from django.core.serializers import serialize
 test_param = openapi.Parameter('test', openapi.IN_QUERY, type=openapi.TYPE_STRING)
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserTypeSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
