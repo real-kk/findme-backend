@@ -12,6 +12,7 @@ schema_url_v1_patterns = [
     url(r'', include(('diary.urls', 'diary'), namespace='diary')),
     url(r'', include(('users.urls', 'users'), namespace='email')),
     url(r'', include(('counsel.urls','counsel'), namespace='counsels')),
+    url(r'', include(('task.urls','task'), namespace='tasks')),
 ]
 
 schema_view = get_schema_view(
