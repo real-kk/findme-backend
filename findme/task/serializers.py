@@ -4,9 +4,9 @@ from .models import  Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    video = serializers.FileField(use_url=True,allow_null=True)
     client_username = ReadOnlyField(source="client.username")
+    video = serializers.FileField(use_url=True,allow_null=False)
 
     class Meta:
         model = Task
-        fields =('title','client_username','create_date','video')
+        fields = ['title','video','client_username'] 
