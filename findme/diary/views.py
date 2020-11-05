@@ -65,9 +65,10 @@ class Text_extract_wordcloud(APIView):
             try:
                 pre_content = DiaryWholeContent.objects.get(client=request.user)
                 pre_content.whole_content += text
+                pre_content.renew_flag = False
                 pre_content.save()
             except DiaryWholeContent.DoesNotExist:
-                diary_whole_content = DiaryWholeContent(client=request.user, whole_content=request.data.get('content'))
+                diary_whole_content = DiaryWholeContent(client=request.user, whole_content=request.data.get('content'), renew_flag=False)
                 diary_whole_content.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -106,7 +107,11 @@ class Whole_content_to_wordcloud(APIView):
             serializer = WholeContentSerializer(whole_content)
             DiaryWholeContent.objects.filter(client=request.user)[0].delete()
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
-        image = make_wordcloud(whole_content.whole_content)
+        if whole_content.renew_flag:
+            image = whole_content.image
+        else:
+            image = make_wordcloud(whole_content.whole_content)
+            whole_content.renew_flag = True
         whole_content.image.save('wordcloud' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + '.png', image)
         whole_content.save()
         serializer = WholeContentSerializer(whole_content)
