@@ -47,7 +47,7 @@ class Counsel_application(APIView):
         ## headers
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
         """
-        counsel = Counsel.objects.filter(client=request.user)
+        counsel = Counsel.objects.filter(counselor=request.user)
         serializer = CounselListSerializer(counsel, many=True)
         return Response(serializer.data)
 
