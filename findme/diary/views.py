@@ -31,9 +31,11 @@ def make_wordcloud(text):
     plt.imshow(cloud, interpolation='lanczos')
     plt.axis('off')
     f = io.BytesIO()
-    plt.savefig(f, format="png")
+    plt.savefig(f, format='png')
+    plt.show()
     image = ImageFile(f)
     return image
+
 class Text_extract_wordcloud(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
