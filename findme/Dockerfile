@@ -8,4 +8,5 @@ RUN apt-get update && \
 RUN apt-get install -y fonts-nanum
 RUN ls -l /usr/share/fonts/truetype/    
 RUN java -version
+RUN curl -L https://raw.githubusercontent.com/konlpy/konlpy/master/scripts/mecab.sh | bash
 ADD . /code/

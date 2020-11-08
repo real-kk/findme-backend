@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from wordcloud import WordCloud
-from konlpy.tag import Okt
+from konlpy.tag import Okt, Mecab
 from collections import Counter
 import matplotlib.pyplot as plt
 from .serializers import DiarySerializer, DiaryListSerializer, WholeContentSerializer, LineGraphSerializer
@@ -15,13 +15,15 @@ from google.cloud import language_v1
 from datetime import datetime
 from google.oauth2 import service_account
 import os
+import re
 
 def make_wordcloud(text):
-    okt = Okt()
-    morphs = okt.pos(text)
+    mecab = Mecab()
+    text = re.compile('[|ㄱ-ㅎ|ㅏ-ㅣ]+').sub("", text)
+    morphs = mecab.pos(text)
     noun_adj_list = []
     for word, tag in morphs:
-        if tag in ['Noun', 'Adjective']:
+        if tag in ['VA', 'NNG', 'NNP', 'NNB', 'NNBC', 'NR', 'NP'] and len(word) > 1:
             noun_adj_list.append(word)
     counts = Counter(noun_adj_list)
     tags = counts.most_common(10)
