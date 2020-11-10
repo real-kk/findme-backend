@@ -3,5 +3,5 @@ from django.urls import path
 
 
 urlpatterns = [
-    path('', views.Review.as_view(), name='review'),
+    path('', views.Review_upload.as_view(), name='review_upload'),
 ]
