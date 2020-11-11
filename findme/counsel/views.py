@@ -64,7 +64,6 @@ class CounselDate(APIView):
         ## headers
             - Authorization : Token
         ## body parameter
-            - counselor : 상담사 user
             - client : 내담자 이메일 [ex> capstone4824@gmail.com]
             - counsel_date : 상담 날짜 [ex> 2020-10-30T20:38:59Z]
         """
