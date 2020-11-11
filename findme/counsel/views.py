@@ -51,6 +51,15 @@ class Counsel_application(APIView):
         serializer = CounselListSerializer(counsel, many=True)
         return Response(serializer.data)
 
+    def delete(self, request, **kwargs):
+        if kwargs.get('id') is None:
+            return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            counsel_id = kwargs.get('id')
+            counsel_obj = Counsel.objects.get(id=counsel_id)
+            counsel_obj.delete()
+            return Response("Counsel was deleted", status=status.HTTP_200_OK)
+
 class CounselDate(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]

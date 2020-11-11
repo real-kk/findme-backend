@@ -15,6 +15,7 @@ class CounselSerializer(serializers.Serializer):
         fields = ('student_number', 'phone_number', 'time_table', 'client_username', 'create_date' 'counselor_username', 'major', 'content')
             
 class CounselListSerializer(serializers.Serializer):
+    id = ReadOnlyField()
     client_username = ReadOnlyField(source="client.username")
     client_email = ReadOnlyField(source='client.email')
     major = serializers.CharField(max_length=100)
@@ -25,7 +26,7 @@ class CounselListSerializer(serializers.Serializer):
     content = serializers.CharField(max_length=100)
     class Meta:
         model = Counsel
-        fields = ('student_number', 'phone_number', 'time_table', 'client_email','client_username', 'create_date', 'counselor_username', 'major', 'content')
+        fields = ('id','student_number', 'phone_number', 'time_table', 'client_email','client_username', 'create_date', 'counselor_username', 'major', 'content')
             
 class CounselDateSerializer(serializers.Serializer):
     counselor_username = ReadOnlyField(source="counselor.username")
