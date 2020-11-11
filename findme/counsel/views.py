@@ -71,8 +71,9 @@ class CounselDate(APIView):
         if serializer.is_valid():
             selected_client_email = request.data.get("client")
             client = User.objects.get(email=selected_client_email)
-            counsel_date = RegisterCounselDate(counselor=request.user, client=client, counsel_date=request.data.get("counsel_date"))
+            counsel_date = RegisterCounselDate(counselor=request.user, client=client)#, counsel_date=request.data.get("counsel_date"))
             counsel_date.save()
+            serializer = CounselDateSerializer(counsel_date)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
