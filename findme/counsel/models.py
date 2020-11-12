@@ -15,7 +15,6 @@ class Counsel(models.Model):
     phone_number = models.CharField(max_length=100)
     time_table = models.ImageField(upload_to=upload_image_to, blank=True, null=True)
     create_date = models.DateTimeField(auto_now_add=True, null=True)
-    # create_date.editable=True
     content = models.CharField(max_length=100, null=True)
     class Meta:
         verbose_name = '신청서'
@@ -27,7 +26,6 @@ class Counsel(models.Model):
 class RegisterCounselDate(models.Model):
     counselor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=True)
     client = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=False)
-    counsel_date = models.DateTimeField(null=True)
 
     class Meta:
         verbose_name = "등록된 상담"
