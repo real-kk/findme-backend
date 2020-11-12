@@ -13,6 +13,7 @@ class TaskSerializer(serializers.ModelSerializer):
 class TaskQuestionSerializer(serializers.ModelSerializer):
     client_email = ReadOnlyField(source="client.email")
     counselor_username = ReadOnlyField(source="counselor.username")
+    question = serializers.CharField(max_length=100)
 
     class Meta:
         model = TaskQuestion

@@ -41,13 +41,13 @@ class TaskDetail(APIView):
         #         print("hi") 제목만 반환하는 경우
         return Response(data, status=status.HTTP_200_OK)
 
-class TaskQuestion(APIView):
+class AddTaskQuestion(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializers = TaskQuestionSerializer(data=request.data)
-        if serializers.is_valid():
+        serializer = TaskQuestionSerializer(data=request.data)
+        if serializer.is_valid():
             client_email = request.data.get('client')
             client = User.objects.get(email=client_email)
             task_question = TaskQuestion(question=request.data.get('question'), counselor=request.user, client=client)
