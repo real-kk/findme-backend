@@ -38,7 +38,9 @@ class CounselDateSerializer(serializers.Serializer):
         fields = ('counselor_username', 'client_username', 'counsel_date')
 
 class CounselClientSerializer(serializers.Serializer):
-    client = ReadOnlyField(source="client.username")
+    client_username = ReadOnlyField(source="client.username")
+    client_email = ReadOnlyField(source="client.email")
+
     class Meta:
         model = RegisterCounselDate
-        fields = ('client',)
+        fields = ('client_username', 'client')
