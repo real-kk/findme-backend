@@ -55,3 +55,7 @@ class AddTaskQuestion(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def get(self, request):
+        questions = TaskQuestion.objects.filter(client=request.user)
+        serializer = TaskQuestionSerializer(questions, many=True)
+        return Response(serializer.data)
