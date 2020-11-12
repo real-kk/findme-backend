@@ -6,9 +6,10 @@ from django.core import serializers
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from  rest_framework.permissions import IsAuthenticated
-from .models import Task
+from .models import Task, TaskQuestion
 from django.core.files.storage import File
 import json
+from users.models import User
 
 class TaskUpload(APIView):
         
@@ -18,7 +19,7 @@ class TaskUpload(APIView):
         serializers=TaskSerializer(data=request.data)
         
         if serializers.is_valid():
-            task = Task(title=request.data.get('title'), video=request.data.get('video'),client=request.user)
+            task = Task(video=request.data.get('video'),client=request.user)
             task.save()
             return Response(serializers.data, status= status.HTTP_201_CREATED)
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -40,4 +41,17 @@ class TaskDetail(APIView):
         #         print("hi") 제목만 반환하는 경우
         return Response(data, status=status.HTTP_200_OK)
 
-        
+class TaskQuestion(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializers = TaskQuestionSerializer(data=request.data)
+        if serializers.is_valid():
+            client_email = request.data.get('client')
+            client = User.objects.get(email=client_email)
+            task_question = TaskQuestion(question=request.data.get('question'), counselor=request.user, client=client)
+            task_question.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

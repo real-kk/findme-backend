@@ -8,11 +8,19 @@ def upload_image_to(instance, filename):
 class Task(models.Model):
     client = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=True)
     create_date = models.DateTimeField(auto_now_add=True, null=True)
-    title= models.CharField(max_length=200)
     video= models.FileField(upload_to=upload_image_to, blank=True ,null=True)
     class Meta:
-        verbose_name = '영상과제'
+        verbose_name = '영상'
 
     def __str__(self):
         now = str(self.create_date)
         return self.client.username+'비디오'+" "+now[:10]
+
+class TaskQuestion(models.Model):
+    question = models.CharField(max_length=200)
+    client = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=True)
+    counselor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        verbose_name = "영상 질문"
+
