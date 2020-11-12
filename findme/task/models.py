@@ -3,7 +3,7 @@ from django.conf import settings
 def upload_image_to(instance, filename):
     import os
     filename_base, filename_ext = os.path.splitext(filename)
-    return 'video/%s%s' % (filename_base,filename_ext )
+    return '%s%s' % (filename_base,filename_ext )
 
 class Task(models.Model):
     client = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=True)
