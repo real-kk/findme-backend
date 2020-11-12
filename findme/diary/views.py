@@ -16,6 +16,7 @@ from datetime import datetime
 from google.oauth2 import service_account
 import os
 import re
+from users.models import User
 
 def make_wordcloud(text):
     mecab = Mecab()
@@ -120,6 +121,13 @@ class Whole_content_to_wordcloud(APIView):
         whole_content.save()
         serializer = WholeContentSerializer(whole_content)
         return Response(serializer.data)
+    
+    def get(self, request):
+        client_email = request.GET.get('client')
+        client = User.objects.get(email=client_email)
+        client_wordcloud = DiaryWholeContent.objects.get(client=client)
+        serializer = WholeContentSerializer(client_wordcloud)
+        return Response(serializer.data)
 
 class Text_extract_linegraph(APIView):
     """
@@ -158,4 +166,11 @@ class Text_extract_linegraph(APIView):
         line_graph.save()
         plt.cla()
         serializer = LineGraphSerializer(line_graph)
+        return Response(serializer.data)
+    
+    def get(self, request):
+        client_email = request.GET.get('client')
+        client = User.objects.get(email=client_email)
+        client_linegraph = LineGraph.objects.get(client=client)
+        serializer = LineGraphSerializer(client_linegraph)
         return Response(serializer.data)
