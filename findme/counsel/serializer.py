@@ -30,15 +30,15 @@ class CounselListSerializer(serializers.Serializer):
             
 class CounselDateSerializer(serializers.Serializer):
     counselor_username = ReadOnlyField(source="counselor.username")
-    client = ReadOnlyField(source="client.email")
-   # counsel_date = serializers.DateTimeField(allow_null=True)
+    client_username = ReadOnlyField(source="client.username")
+    counsel_date = serializers.DateTimeField(allow_null=True)
 
     class Meta:
         model = RegisterCounselDate
-        fields = ('counselor_username', 'client')#, 'counsel_date')
+        fields = ('counselor_username', 'client_username', 'counsel_date')
 
 class CounselClientSerializer(serializers.Serializer):
-    client_username = ReadOnlyField(source="client.username")
+    client = ReadOnlyField(source="client.username")
     class Meta:
         model = RegisterCounselDate
-        fields = ('client_username',)
+        fields = ('client',)
