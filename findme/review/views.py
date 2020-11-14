@@ -55,7 +55,6 @@ class Review_upload(APIView):
             - content : 후기 내용
 
         """
-        print(request.data.get("review_id"))
         try:
             selected_review = Review.objects.get(id=request.data.get("review_id"))
         except : 
@@ -70,11 +69,19 @@ class Review_upload(APIView):
         return Response( 'Review updated success' ,status=status.HTTP_201_CREATED)
 
     def delete(self, request, **kwargs):
+        """
+        리뷰 삭제
+
+        ---
+        # /counsels/<id:int>/
+        ## headers
+            - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
+        """
         if kwargs.get('id') is None:
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
         else:
             review_id = kwargs.get('id')
-            review_obj = Counsel.objects.get(id=counsel_id)
+            review_obj = Review.objects.get(id=review_id)
             review_obj.delete()
             return Response("Counsel was deleted", status=status.HTTP_200_OK)
 
