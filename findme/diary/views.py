@@ -39,6 +39,52 @@ def make_wordcloud(text):
     image = ImageFile(f)
     return image
 
+def create_wordcloud(request, user):
+    try:
+        whole_content = DiaryWholeContent.objects.get(client=user)
+    except DiaryWholeContent.DoesNotExist:
+        whole_content = DiaryWholeContent(client=user, image=os.path.abspath('.') + '/diary/not_existing_diary.png')
+        whole_content.save()
+        serializer = WholeContentSerializer(whole_content)
+        DiaryWholeContent.objects.filter(client=user)[0].delete()
+        return ("400", serializer.data)
+    if whole_content.renew_flag:
+        image = whole_content.image
+    else:
+        image = make_wordcloud(whole_content.whole_content)
+        whole_content.renew_flag = True
+    whole_content.image.save('wordcloud' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + '.png', image)
+    whole_content.save()
+    serializer = WholeContentSerializer(whole_content)
+    return ("200", serializer.data)
+
+def create_linegraph(request, user):
+    scores = [score.get("sentiment_score", -1) for score in Diary.objects.filter(client=user).values("sentiment_score")]
+    plt.figure(figsize=(8,8))
+    if len(scores) == 1:
+        x = [x_value for x_value in range(1, len(scores) + 1)]
+        plt.plot(x, scores, 'ro')
+    elif len(scores) < 7:
+        x = [x_value for x_value in range(1, len(scores) + 1)]
+        plt.plot(x, scores, 'r')
+    else:
+        x = [x_value for x_value in range(1, 8)]
+        plt.plot(x, scores[-7:], 'r')
+    plt.axis([1, 7, 0, 1])
+    fig = plt.gcf()
+    file_io = io.BytesIO()
+    fig.savefig(file_io, format="png")
+    graph_image = ImageFile(file_io)
+    try:
+        line_graph = LineGraph.objects.get(client=user)
+    except LineGraph.DoesNotExist:
+        line_graph = LineGraph(client=user)
+    line_graph.line_graph.save("line_graph" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".png", graph_image)
+    line_graph.save()
+    plt.cla()
+    serializer = LineGraphSerializer(line_graph)
+    return serializer.data
+
 class Text_extract_wordcloud(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -125,30 +171,17 @@ class Whole_content_to_wordcloud(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        try:
-            whole_content = DiaryWholeContent.objects.get(client=request.user)
-        except DiaryWholeContent.DoesNotExist:
-            whole_content = DiaryWholeContent(client=request.user, image=os.path.abspath('.') + '/diary/not_existing_diary.png')
-            whole_content.save()
-            serializer = WholeContentSerializer(whole_content)
-            DiaryWholeContent.objects.filter(client=request.user)[0].delete()
-            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
-        if whole_content.renew_flag:
-            image = whole_content.image
-        else:
-            image = make_wordcloud(whole_content.whole_content)
-            whole_content.renew_flag = True
-        whole_content.image.save('wordcloud' + datetime.now().strftime('%Y-%m-%d_%H%M%S') + '.png', image)
-        whole_content.save()
-        serializer = WholeContentSerializer(whole_content)
-        return Response(serializer.data)
-    
+        data = create_wordcloud(request, request.user)
+        if data[0] == '200':
+            return Response(data[1])
+        return Response(data[1], status.HTTP_400_BAD_REQUEST) 
     def get(self, request):
         client_email = request.GET.get('client')
         client = User.objects.get(email=client_email)
-        client_wordcloud = DiaryWholeContent.objects.get(client=client)
-        serializer = WholeContentSerializer(client_wordcloud)
-        return Response(serializer.data)
+        data = create_wordcloud(request, client)
+        if data[0] == '200':
+            return Response(data[1])
+        return Response(data[1], status.HTTP_400_BAD_REQUEST) 
 
 class Text_extract_linegraph(APIView):
     """
@@ -163,35 +196,12 @@ class Text_extract_linegraph(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        scores = [score.get("sentiment_score", -1) for score in Diary.objects.filter(client=request.user).values("sentiment_score")]
-        plt.figure(figsize=(8,8))
-        if len(scores) == 1:
-            x = [x_value for x_value in range(1, len(scores) + 1)]
-            plt.plot(x, scores, 'ro')
-        elif len(scores) < 7:
-            x = [x_value for x_value in range(1, len(scores) + 1)]
-            plt.plot(x, scores, 'r')
-        else:
-            x = [x_value for x_value in range(1, 8)]
-            plt.plot(x, scores[-7:], 'r')
-        plt.axis([1, 7, 0, 1])
-        fig = plt.gcf()
-        file_io = io.BytesIO()
-        fig.savefig(file_io, format="png")
-        graph_image = ImageFile(file_io)
-        try:
-            line_graph = LineGraph.objects.get(client=request.user)
-        except LineGraph.DoesNotExist:
-            line_graph = LineGraph(client=request.user)
-        line_graph.line_graph.save("line_graph" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".png", graph_image)
-        line_graph.save()
-        plt.cla()
-        serializer = LineGraphSerializer(line_graph)
-        return Response(serializer.data)
-    
+        data = create_linegraph(request, request.user)
+        return Response(data)
+        
     def get(self, request):
         client_email = request.GET.get('client')
         client = User.objects.get(email=client_email)
-        client_linegraph = LineGraph.objects.get(client=client)
-        serializer = LineGraphSerializer(client_linegraph)
-        return Response(serializer.data)
+        data = create_linegraph(request, client)
+        return Response(data)
+
