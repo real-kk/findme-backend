@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from wordcloud import WordCloud
-from konlpy.tag import Okt, Mecab
+from konlpy.tag import Mecab
 from collections import Counter
 import matplotlib.pyplot as plt
 from .serializers import DiarySerializer, DiaryListSerializer, WholeContentSerializer, LineGraphSerializer
@@ -39,7 +39,7 @@ def make_wordcloud(text):
     image = ImageFile(f)
     return image
 
-def create_wordcloud(request, user):
+def create_wordcloud_result(request, user):
     try:
         whole_content = DiaryWholeContent.objects.get(client=user)
     except DiaryWholeContent.DoesNotExist:
@@ -58,7 +58,7 @@ def create_wordcloud(request, user):
     serializer = WholeContentSerializer(whole_content)
     return ("200", serializer.data)
 
-def create_linegraph(request, user):
+def create_linegraph_result(request, user):
     scores = [score.get("sentiment_score", -1) for score in Diary.objects.filter(client=user).values("sentiment_score")]
     plt.figure(figsize=(8,8))
     if len(scores) == 1:
@@ -149,13 +149,13 @@ class Text_extract_wordcloud(APIView):
         ## parameter
             - id : Diary id 값 
         """
-        id=request.GET.get("id")
+        id = request.GET.get("id")
         queryset = Diary.objects.get(id=id)
         try:
             queryset.delete()
         except:
-            return Response( status=status.HTTP_400_BAD_REQUEST)
-        return Response( status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_200_OK)
 
 
 class Whole_content_to_wordcloud(APIView):
@@ -171,17 +171,18 @@ class Whole_content_to_wordcloud(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        data = create_wordcloud(request, request.user)
-        if data[0] == '200':
-            return Response(data[1])
-        return Response(data[1], status.HTTP_400_BAD_REQUEST) 
+        exist_status, data = create_wordcloud_result(request, request.user)
+        if exist_status == '200':
+            return Response(data)
+        return Response(data, status.HTTP_400_BAD_REQUEST)
+        
     def get(self, request):
         client_email = request.GET.get('client')
         client = User.objects.get(email=client_email)
-        data = create_wordcloud(request, client)
-        if data[0] == '200':
-            return Response(data[1])
-        return Response(data[1], status.HTTP_400_BAD_REQUEST) 
+        exist_status, data = create_wordcloud_result(request, client)
+        if exist_status == '200':
+            return Response(data)
+        return Response(data, status.HTTP_400_BAD_REQUEST) 
 
 class Text_extract_linegraph(APIView):
     """
@@ -196,12 +197,12 @@ class Text_extract_linegraph(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        data = create_linegraph(request, request.user)
+        data = create_linegraph_result(request, request.user)
         return Response(data)
         
     def get(self, request):
         client_email = request.GET.get('client')
         client = User.objects.get(email=client_email)
-        data = create_linegraph(request, client)
+        data = create_linegraph_result(request, client)
         return Response(data)
 
