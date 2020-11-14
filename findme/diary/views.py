@@ -70,7 +70,7 @@ def create_linegraph_result(request, user):
     else:
         x = [x_value for x_value in range(1, 8)]
         plt.plot(x, scores[-7:], 'r')
-    plt.axis([1, 7, 0, 1])
+    plt.axis([1, 7, -1, 1])
     fig = plt.gcf()
     file_io = io.BytesIO()
     fig.savefig(file_io, format="png")
