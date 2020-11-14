@@ -135,7 +135,7 @@ class Text_extract_wordcloud(APIView):
         """
         diary = Diary.objects.filter(client=request.user)
         serializer = DiaryListSerializer(diary, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data,status=status.HTTP_200_OK)
     
     def delete(self,request):
         """
@@ -173,7 +173,7 @@ class Whole_content_to_wordcloud(APIView):
     def post(self, request):
         exist_status, data = create_wordcloud_result(request, request.user)
         if exist_status == '200':
-            return Response(data)
+            return Response(data,status=status.HTTP_201_CREATED)
         return Response(data, status.HTTP_400_BAD_REQUEST)
         
     def get(self, request):
@@ -181,7 +181,7 @@ class Whole_content_to_wordcloud(APIView):
         client = User.objects.get(email=client_email)
         exist_status, data = create_wordcloud_result(request, client)
         if exist_status == '200':
-            return Response(data)
+            return Response(data,status=status.HTTP_200_OK)
         return Response(data, status.HTTP_400_BAD_REQUEST) 
 
 class Text_extract_linegraph(APIView):
@@ -204,5 +204,5 @@ class Text_extract_linegraph(APIView):
         client_email = request.GET.get('client')
         client = User.objects.get(email=client_email)
         data = create_linegraph_result(request, client)
-        return Response(data)
+        return Response(data,status=status.HTTP_200_OK)
 

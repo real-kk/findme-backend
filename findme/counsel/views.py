@@ -49,7 +49,7 @@ class Counsel_application(APIView):
         """
         counsel = Counsel.objects.filter(counselor=request.user)
         serializer = CounselListSerializer(counsel, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
     def delete(self, request, **kwargs):
         """
@@ -105,6 +105,6 @@ class CounselDate(APIView):
         """
         clients = RegisterCounselDate.objects.filter(counselor=request.user)
         serializer = CounselClientSerializer(clients, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data,status=status.HTTP_200_OK)
         
 

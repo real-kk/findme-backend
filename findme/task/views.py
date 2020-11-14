@@ -34,7 +34,7 @@ class TaskDetail(APIView):
             Task.objects.get(id=task_id)
             task = Task.objects.filter(id=task_id)
         except:
-            return Response('Task Not Exist Error',status=404)
+            return Response('Task Not Exist Error',status=status.HTTP_400_BAD_REQUEST)
         data=task.values('id','title','create_date','video')
         # for t in task:
         #     if t.video =="":
@@ -58,4 +58,4 @@ class AddTaskQuestion(APIView):
     def get(self, request):
         questions = TaskQuestion.objects.filter(client=request.user)
         serializer = TaskQuestionSerializer(questions, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data,status=status.HTTP_200_OK)
