@@ -13,13 +13,15 @@ class DiarySerializer(serializers.ModelSerializer):
 
 
 class DiaryListSerializer(serializers.ModelSerializer):
+    id = ReadOnlyField()
+
     create_date = serializers.SerializerMethodField()
 
     def get_create_date(self, obj):
         return obj.create_date.astimezone(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M')
     class Meta:
         model = Diary
-        fields = ('title', 'create_date', 'content')
+        fields = ('id','title', 'create_date', 'content')
 
 class WholeContentSerializer(serializers.ModelSerializer):
     client_username = ReadOnlyField(source="client.username")
