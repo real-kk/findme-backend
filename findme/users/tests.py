@@ -19,8 +19,8 @@ class UserTest(TestCase):
     def test_user_registration(self):
 
         regi_info ={
-            "username": "",
-            "email":"@gmail.com",
+            "username": "testname",
+            "email":"test@gmail.com",
             "user_type":"1",
             "password1":"!@#",
             "password2":"!@#" 
