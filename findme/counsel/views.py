@@ -52,6 +52,14 @@ class Counsel_application(APIView):
         return Response(serializer.data)
 
     def delete(self, request, **kwargs):
+        """
+        신청서 삭제
+
+        ---
+        # /counsels/<id:int>/
+        ## headers
+            - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
+        """
         if kwargs.get('id') is None:
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
         else:
