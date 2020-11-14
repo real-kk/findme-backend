@@ -13,5 +13,5 @@ class Review(models.Model):
         verbose_name = '후기'
     def __str__(self):
         now = str(self.create_date)
-        return self.client.username+'후기'+" "+now[:10]
+        return self.client.username+' 님의 후기'+" "+now[:10]
 
