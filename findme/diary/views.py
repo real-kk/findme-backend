@@ -108,8 +108,8 @@ class Text_extract_wordcloud(APIView):
         try:
             queryset.delete()
         except:
-            return Response( status=status.HTTP_400_BAD_REQUEST)
-        return Response( status=status.HTTP_200_OK)
+            return Response( "Cannot Delete",status=status.HTTP_400_BAD_REQUEST)
+        return Response( "Counsel was deleted",status=status.HTTP_200_OK)
 
 
 class Whole_content_to_wordcloud(APIView):
