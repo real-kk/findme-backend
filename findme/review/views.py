@@ -9,6 +9,7 @@ from users.models import User
 from datetime import datetime
 from .models import Review
 from django.forms.models import model_to_dict
+import json
 
 class Review_upload(APIView):
  
@@ -54,19 +55,19 @@ class Review_upload(APIView):
             - content : 후기 내용
 
         """
-
-        selected_counselor_email= request.data.get("counselor")
-        selected_review = Review.objects.get(id=request.data.get("review_id"))
-        counselor = User.objects.get(email=selected_counselor_email)
-        create_date= request.data.get("create_date")
+        print(request.data.get("review_id"))
+        try:
+            selected_review = Review.objects.get(id=request.data.get("review_id"))
+        except : 
+            return Response('Review not exist' , status=status.HTTP_400_BAD_REQUEST)
         content= request.data.get("content")
+        selected_review.content =content
+        try:
+            selected_review.save()
+        except : 
+            return Response( 'Review updated failed' ,status=status.HTTP_400_BAD_REQUEST)
 
-        review = Review(client=request.user,counselor=counselor,create_date=datetime.now(),content=content)
-        serializer=ReviewSerializer(data={'client': request.user, 'counselor':counselor ,'create_date':datetime.now(),'content':content  })
-        if serializer.is_valid():
-            review.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response( 'Review updated success' ,status=status.HTTP_201_CREATED)
 
     def delete(self, request, **kwargs):
         if kwargs.get('id') is None:
