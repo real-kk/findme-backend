@@ -90,6 +90,27 @@ class Text_extract_wordcloud(APIView):
         diary = Diary.objects.filter(client=request.user)
         serializer = DiaryListSerializer(diary, many=True)
         return Response(serializer.data)
+    
+    def delete(self,request):
+        """
+        감정일기 삭제
+
+        ---
+        # /diaries/
+        ## headers
+            - Authorization : Token "key 값"
+
+        ## parameter
+            - id : Diary id 값 
+        """
+        id=request.GET.get("id")
+        queryset = Diary.objects.get(id=id)
+        try:
+            queryset.delete()
+        except:
+            return Response( status=status.HTTP_400_BAD_REQUEST)
+        return Response( status=status.HTTP_200_OK)
+
 
 class Whole_content_to_wordcloud(APIView):
     """
