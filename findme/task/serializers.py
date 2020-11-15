@@ -4,12 +4,11 @@ from .models import  Task, TaskQuestion
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    client_username = ReadOnlyField(source="client.username")
     video = serializers.FileField(use_url=True,allow_null=False)
+    task_id =serializers.IntegerField()
     class Meta:
         model = Task
-        fields = ['video', 'client_username']
-        
+        fields = ['video' ,'task_id']
 class TaskQuestionSerializer(serializers.ModelSerializer):
     client_email = ReadOnlyField(source="client.email")
     counselor_username = ReadOnlyField(source="counselor.username")
