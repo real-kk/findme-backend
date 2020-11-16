@@ -6,7 +6,7 @@ from django.core import serializers
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from  rest_framework.permissions import IsAuthenticated
-from .models import Task, TaskQuestion
+from .models import Task
 from django.core.files.storage import File
 import json
 from users.models import User

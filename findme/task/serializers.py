@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer,ReadOnlyField
-from .models import  Task, TaskQuestion
+from .models import  Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -15,5 +15,5 @@ class TaskQuestionSerializer(serializers.ModelSerializer):
     question = serializers.CharField(max_length=100)
 
     class Meta:
-        model = TaskQuestion
+        model = Task
         fields = ['question', 'client_email', 'counselor_username']

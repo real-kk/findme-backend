@@ -18,11 +18,3 @@ class Task(models.Model):
         now = str(self.create_date)
         return self.client.username+'비디오'+" "+now[:10]
 
-class TaskQuestion(models.Model):
-    question = models.CharField(max_length=200, blank=True)
-    client = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=True)
-    counselor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=True)
-
-    class Meta:
-        verbose_name = "영상 질문"
-
