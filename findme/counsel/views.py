@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.files.images import ImageFile
 from .models import Counsel, RegisterCounselDate
-from .serializer import CounselSerializer, CounselListSerializer, CounselDateSerializer, CounselClientSerializer
+from .serializer import CounselSerializer, CounselListSerializer, CounselDateSerializer, CounselClientSerializer, CounselPhotoSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from users.models import User
@@ -31,11 +31,11 @@ class Counsel_application(APIView):
         """
         selected_counselor_email= request.data.get("counselor")
         counselor = User.objects.get(email=selected_counselor_email)
-        counsel = Counsel(time_table=request.data.get("time_table"), major=request.data.get("major"), client=request.user,counselor=counselor, create_date=now(),phone_number=request.data.get("phone_number"), student_number=request.data.get("student_number"), content=request.data.get("content"))
+        counsel = Counsel(major=request.data.get("major"), client=request.user,counselor=counselor, create_date=now(),phone_number=request.data.get("phone_number"), student_number=request.data.get("student_number"), content=request.data.get("content"))
         serializer = CounselSerializer(counsel)
         if serializer.is_valid: 
             counsel.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response((serializer.data, counsel.pk), status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def get(self, request):
@@ -67,6 +67,22 @@ class Counsel_application(APIView):
             counsel_obj = Counsel.objects.get(id=counsel_id)
             counsel_obj.delete()
             return Response("Counsel was deleted", status=status.HTTP_200_OK)
+
+class CounselPhoto(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, **kwargs):
+        if kwargs.get('id') is None:
+            return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
+        serializer = CounselPhotoSerializer(data=request.data)
+        if serializer.is_valid():
+            counsel = Counsel.objects.get(pk=kwargs.get("id"))
+            counsel.time_table = request.data.get("time_table")
+            counsel.save()
+            return Response("Counsel time table was updated", status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CounselDate(APIView):
     authentication_classes = [TokenAuthentication]
@@ -106,5 +122,3 @@ class CounselDate(APIView):
         clients = RegisterCounselDate.objects.filter(counselor=request.user)
         serializer = CounselClientSerializer(clients, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
-        
-

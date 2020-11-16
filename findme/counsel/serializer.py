@@ -7,13 +7,18 @@ class CounselSerializer(serializers.Serializer):
     major = serializers.CharField(max_length=100)
     student_number = serializers.CharField(max_length=100)
     phone_number = serializers.CharField(max_length=100)
-    time_table = serializers.ImageField(use_url=True,allow_null=True)
     create_date = serializers.DateTimeField(allow_null=True)
     content = serializers.CharField(max_length=100)
     class Meta:
         model = Counsel
-        fields = ('student_number', 'phone_number', 'time_table', 'client_username', 'create_date' 'counselor_username', 'major', 'content')
-            
+        fields = ('student_number', 'phone_number', 'client_username', 'create_date' 'counselor_username', 'major', 'content')
+
+class CounselPhotoSerializer(serializers.Serializer):
+    time_table = serializers.ImageField(use_url=True, allow_null=True)
+    class Meta:
+        model = Counsel
+        fields = ('time_table')
+
 class CounselListSerializer(serializers.Serializer):
     id = ReadOnlyField()
     client_username = ReadOnlyField(source="client.username")
@@ -43,3 +48,4 @@ class CounselClientSerializer(serializers.Serializer):
     class Meta:
         model = RegisterCounselDate
         fields = ('client_username', 'client')
+
