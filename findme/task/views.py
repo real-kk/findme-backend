@@ -17,10 +17,14 @@ class TaskUpload(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
         serializers=TaskSerializer(data=request.data)
-        
         if serializers.is_valid():
-            task = Task(video=request.data.get('video'),client=request.user)
-            task.save()
+            try : 
+                task_id= request.data.get('task_id')
+                selected_task = Task.objects.get(id=task_id)
+            except:
+                return Response('task Not Founded',status= status.HTTP_404_NOT_FOUND)
+            selected_task.video=request.data.get('video')
+            selected_task.save()
             return Response(serializers.data, status= status.HTTP_201_CREATED)
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -50,8 +54,8 @@ class AddTaskQuestion(APIView):
         if serializer.is_valid():
             client_email = request.data.get('client')
             client = User.objects.get(email=client_email)
-            task_question = TaskQuestion(question=request.data.get('question'), counselor=request.user, client=client)
-            task_question.save()
+            task = Task(question=request.data.get('question'), counselor=request.user, client=client)
+            task.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
