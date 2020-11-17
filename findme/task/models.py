@@ -20,7 +20,7 @@ class Task(models.Model):
     neutral = models.FloatField(verbose_name="중립", null=True, blank=True)
     sadness = models.FloatField(verbose_name="슬픔", null=True, blank=True)
     surprise = models.FloatField(verbose_name="놀람", null=True, blank=True)
-    image = models.ImageField(upload_to="sentiment_graph/", blank=True, null=True)
+
     class Meta:
         verbose_name = '영상'
 
@@ -32,4 +32,12 @@ class Task(models.Model):
         from datetime import datetime
         self.video.name = datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".mp4"
         super(Task, self).save(*args, **kwargs)
+
+class SentimentGraph(models.Model):
+    image = models.ImageField(upload_to="sentiment_graph/", blank=True, null=True)
+    client = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="+", on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        verbose_name = "꺾은선그래프 - 영상감정"
+
         

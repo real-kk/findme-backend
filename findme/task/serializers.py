@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer,ReadOnlyField
-from .models import  Task
+from .models import Task, SentimentGraph
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -17,3 +17,10 @@ class TaskQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['id', 'question', 'client_email', 'counselor_username']
+
+class SentimentGraphSerializer(serializers.ModelSerializer):
+    client_username = ReadOnlyField(source="client.username")
+
+    class Meta:
+        model = SentimentGraph
+        fields = ('client_username', 'image')
