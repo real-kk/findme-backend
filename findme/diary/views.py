@@ -195,11 +195,10 @@ class Text_extract_linegraph(APIView):
 
     def post(self, request):
         data = create_linegraph_result(request, request.user)
-        return Response(data)
+        return Response(data,status=status.HTTP_201_CREATED)
         
     def get(self, request):
-        client_email = request.GET.get('client')
-        client = User.objects.get(email=client_email)
+        client= request.user
         data = create_linegraph_result(request, client)
         return Response(data,status=status.HTTP_200_OK)
 
