@@ -3,10 +3,44 @@ sys.path.append("..")
 import json 
 
 from django.test import TestCase,Client
-from .models import Diary
+from .models import Diary,DiaryWholeContent
 from users.models import User
 from rest_framework.authtoken.models import Token
+from django.db.models.fields.related import ForeignKey
+class DiaryModelTest(TestCase):
+    @classmethod
+    def setUpTestData(self):
+        self.user = User.objects.create(                                   
+            email='super@gmail.com',                                                                   
+            password='test',
+            username='강낭콩'                                                    
+        )
 
+        # Set up non-modified objects used by all test methods
+        Diary.objects.create(content='콘텐트', title='제목',client=self.user)
+    
+    def test_client_is_foreignkey(self):
+        diary=Diary.objects.get(id=1)
+        client = diary._meta.get_field('client')
+        self.assertEquals(type(client),ForeignKey)
+
+    def test_sentiment_score_label(self):
+        diary=Diary.objects.get(id=1)
+        field_label = diary._meta.get_field('sentiment_score').verbose_name
+        self.assertEquals(field_label, '텍스트감정분석결과')
+
+    def test_title_max_length(self):
+        diary = Diary.objects.get(id=1)
+        max_length = diary._meta.get_field('title').max_length
+        self.assertEquals(max_length, 100)
+    def test_content_max_length(self):
+        diary = Diary.objects.get(id=1)
+        max_length = diary._meta.get_field('content').max_length
+        self.assertEquals(max_length, 1000)
+
+    def test_diary_meta_verbose_name(self):
+        diary = Diary.objects.get(id=1)
+        self.assertEquals('감정일기', diary._meta.verbose_name)
 
 # test용 데이터
 class DiaryWordCloudTest(TestCase):
