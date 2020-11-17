@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ReadOnlyField
 from .models import Counsel, RegisterCounselDate
 class CounselSerializer(serializers.Serializer):
+    id = ReadOnlyField()
     client_username = ReadOnlyField(source="client.username")
     counselor_username = ReadOnlyField(source="counselor.username")
     major = serializers.CharField(max_length=100)
@@ -11,7 +12,7 @@ class CounselSerializer(serializers.Serializer):
     content = serializers.CharField(max_length=100)
     class Meta:
         model = Counsel
-        fields = ('student_number', 'phone_number', 'client_username', 'create_date' 'counselor_username', 'major', 'content')
+        fields = ('id', 'student_number', 'phone_number', 'client_username', 'create_date' 'counselor_username', 'major', 'content')
 
 class CounselPhotoSerializer(serializers.Serializer):
     time_table = serializers.ImageField(use_url=True, allow_null=True)
