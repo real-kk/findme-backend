@@ -91,3 +91,23 @@ class VideoProcessing(APIView):
         if str(response.status_code) == '200':
             return Response(url, status=status.HTTP_200_OK)
         return Response("Processed Video is not exist", status=status.HTTP_404_NOT_FOUND)
+
+
+class MakeSentimentLinegraph(APIView):
+    def post(self, request):
+        SentimentSerializer(data=request.data)
+        sentiments = request.data.get("sentiments")
+        filename = request.data.get("key")
+        print(filename)
+        emotions = list(map(str, sentiments.replace(' ', '').replace('\'', '').rstrip('}').lstrip('{').split(',')))
+        task = Task.objects.filter(video=filename)[0]
+        task.anger = float(emotions[0].split(':')[1])
+        task.contempt = float(emotions[1].split(':')[1])
+        task.disgust = float(emotions[2].split(':')[1])
+        task.fear = float(emotions[3].split(':')[1])
+        task.happiness = float(emotions[4].split(':')[1])
+        task.neutral = float(emotions[5].split(':')[1])
+        task.sadness = float(emotions[6].split(':')[1])
+        task.surprise = float(emotions[7].split(':')[1])
+        task.save()
+        return Response(request.data, status=status.HTTP_200_OK)

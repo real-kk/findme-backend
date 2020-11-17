@@ -8,4 +8,5 @@ urlpatterns = [
     path('questions/', views.AddTaskQuestion.as_view(), name='TaskQuestion'),
     path('process_videos/<int:id>/', views.VideoProcessing.as_view(), name='VideoProcessing'),
     path('questions_counselor/', views.TaskQuestionForCounselor.as_view(), name="QuestionForCounselor"),
+    path('sentiment/', views.MakeSentimentLinegraph.as_view(), name='sentiments')
 ]
