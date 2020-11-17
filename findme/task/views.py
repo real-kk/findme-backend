@@ -75,7 +75,7 @@ class VideoProcessing(APIView):
         if kwargs.get('id') is None:
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
         new_video = Task.objects.get(pk=kwargs.get("id"))
-        url = 'https://processed-video-lambda.s3.ap-northeast-2.amazonaws.com/' + new_video.filename()
+        url = 'https://processed-video-lambda.s3.ap-northeast-2.amazonaws.com/' + str(new_video.video.name)
         response = requests.get(url)
         if str(response.status_code) == '200':
             return Response(url, status=status.HTTP_200_OK)
