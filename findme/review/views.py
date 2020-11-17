@@ -112,11 +112,9 @@ class Review_get_by_client(APIView):
         특정 내담자의 리뷰 조회
 
         ---
-        # /reviews/counselors/
+        # /reviews/counselors/<id : int>
         ## headers
             - Authorization : Token "key 값" 
-        ## paramters
-            - id : Client id 값
         """
         client_id= request.GET.get('id')
         
