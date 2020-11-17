@@ -1,9 +1,10 @@
 from django.db import models
 from django.conf import settings
+
 def upload_image_to(instance, filename):
     import os
     filename_base, filename_ext = os.path.splitext(filename)
-    return '%s%s' % (filename_base,filename_ext )
+    return '%s%s' % (filename_base,filename_ext)
 
 class Task(models.Model):
     question = models.CharField(max_length=200, blank=True)
@@ -17,3 +18,9 @@ class Task(models.Model):
     def __str__(self):
         now = str(self.create_date)
         return self.client.username+'비디오'+" "+now[:10]
+
+    def save(self, *args, **kwargs):
+        from datetime import datetime
+        self.video.name = datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".mp4"
+        super(Task, self).save(*args, **kwargs)
+        
