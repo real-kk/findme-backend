@@ -91,11 +91,9 @@ class Review_get_by_counselor(APIView):
         특정 상담사의 리뷰 조회
 
         ---
-        # /reviews/counselors/
+        # /reviews/counselors/<int:id>/
         ## headers
             - Authorization : Token "key 값" 
-        ## paramters
-            - id : Counselor id 값
         """
         if kwargs.get('id') is None:
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
@@ -107,21 +105,20 @@ class Review_get_by_counselor(APIView):
             return Response(serializer.data,status=status.HTTP_200_OK)
 
 class Review_get_by_client(APIView):
-    def get(self, request):
+    def get(self, request,**kwargs):
         """
         특정 내담자의 리뷰 조회
 
         ---
-        # /reviews/counselors/<id : int>
+        # /reviews/clients/<id : int>
         ## headers
             - Authorization : Token "key 값" 
         """
-        client_id= request.GET.get('id')
-        
-        client = User.objects.get(id=client_id)
+        if kwargs.get('id') is None:
+            return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            client = User.objects.get(id=kwargs.get('id'))
+            review = Review.objects.filter(client=client)
+            serializer = ReviewListSerializer(review, many=True)
+            return Response(serializer.data,status=status.HTTP_200_OK)
 
-        review = Review.objects.filter(client=client)
-
-        serializer = ReviewListSerializer(review, many=True)
-        
-        return Response(serializer.data,status=status.HTTP_200_OK)
