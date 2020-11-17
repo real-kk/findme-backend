@@ -136,3 +136,10 @@ class GETReviewTest(TestCase):
         kwargs=Review.objects.values().first()['client_id']
         response= self.client.get(url+str(kwargs)+'/',content_type='application/json')
         self.assertEqual(response.status_code,200)
+
+        
+    def test_get_review_by_client(self):
+        url="/reviews/clients/"
+        kwargs=Review.objects.values().first()['counselor_id']
+        response= self.client.get(url+str(kwargs)+'/',content_type='application/json')
+        self.assertEqual(response.status_code,200)
