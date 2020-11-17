@@ -42,6 +42,39 @@ class DiaryModelTest(TestCase):
         diary = Diary.objects.get(id=1)
         self.assertEquals('감정일기', diary._meta.verbose_name)
 
+class DiaryWholeContentModelTest(TestCase):
+    @classmethod
+    def setUpTestData(self):
+        self.user = User.objects.create(                                   
+            email='super@gmail.com',                                                                   
+            password='test',
+            username='강낭콩'                                                    
+        )
+
+        # Set up non-modified objects used by all test methods
+        DiaryWholeContent.objects.create(whole_content='전체 내용',client=self.user)
+    def test_client_is_foreignkey(self):
+        diary_whole_content=DiaryWholeContent.objects.get(id=1)
+        client = diary_whole_content._meta.get_field('client')
+        self.assertEquals(type(client),ForeignKey)
+
+
+    def test_renew_flag_default_is_False(self):
+        diary_whole_content = DiaryWholeContent.objects.get(id=1)
+        default = diary_whole_content.renew_flag
+        self.assertFalse(default)
+
+    def test_whole_content_max_length(self):
+        diary_whole_content = DiaryWholeContent.objects.get(id=1)
+        max_length = diary_whole_content._meta.get_field('whole_content').max_length
+        self.assertEquals(max_length, 10000)
+
+    def test_diary_meta_verbose_name(self):
+        whole_diary = DiaryWholeContent.objects.get(id=1)
+        self.assertEquals('감정일기 내용 모음', whole_diary._meta.verbose_name)
+
+
+
 # test용 데이터
 class DiaryWordCloudTest(TestCase):
 
