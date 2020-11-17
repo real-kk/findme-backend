@@ -173,7 +173,7 @@ class LineGraphTest(TestCase):
 
     def test_text_extract_linegraph_get(self):
 
-        response= self.client.get('/linegraph/')
+        response= self.client.get('/linegraph/',data={"client":"super@gmail.com"})
         self.assertEqual(response.status_code,200)
 
 
