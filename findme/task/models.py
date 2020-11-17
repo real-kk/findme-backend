@@ -18,3 +18,6 @@ class Task(models.Model):
         now = str(self.create_date)
         return self.client.username+'비디오'+" "+now[:10]
 
+    def filename(self):
+        import os
+        return os.path.basename(self.video.name)
