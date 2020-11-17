@@ -110,7 +110,11 @@ class Review_get_by_client(APIView):
         특정 내담자의 리뷰 조회
 
         ---
+<<<<<<< HEAD
         # /reviews/clients/<id : int>
+=======
+        # /reviews/counselors/<id : int>
+>>>>>>> main
         ## headers
             - Authorization : Token "key 값" 
         """
