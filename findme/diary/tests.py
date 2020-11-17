@@ -1,9 +1,11 @@
 import sys
 sys.path.append("..")
 import json 
-
+import tempfile
+from django.core.files.images import ImageFile
 from django.test import TestCase,Client
-from .models import Diary,DiaryWholeContent
+from .models import Diary,DiaryWholeContent,LineGraph
+from django.db.models.fields.files import ImageField
 from users.models import User
 from rest_framework.authtoken.models import Token
 from django.db.models.fields.related import ForeignKey
@@ -58,7 +60,6 @@ class DiaryWholeContentModelTest(TestCase):
         client = diary_whole_content._meta.get_field('client')
         self.assertEquals(type(client),ForeignKey)
 
-
     def test_renew_flag_default_is_False(self):
         diary_whole_content = DiaryWholeContent.objects.get(id=1)
         default = diary_whole_content.renew_flag
@@ -72,6 +73,37 @@ class DiaryWholeContentModelTest(TestCase):
     def test_diary_meta_verbose_name(self):
         whole_diary = DiaryWholeContent.objects.get(id=1)
         self.assertEquals('감정일기 내용 모음', whole_diary._meta.verbose_name)
+
+class LineGraphModelTest(TestCase):
+    @classmethod
+    def setUpTestData(self):
+        self.user = User.objects.create(                                   
+            email='super@gmail.com',                                                                   
+            password='test',
+            username='강낭콩'                                                    
+        )
+      
+        file = tempfile.NamedTemporaryFile(suffix='.png')
+        image_mock= ImageFile(file, name=file.name)
+        LineGraph.objects.create(line_graph=image_mock,client=self.user)
+
+    def test_client_is_foreignkey(self):
+        line_graph=LineGraph.objects.get(id=1)
+        client = line_graph._meta.get_field('client')
+        self.assertEquals(type(client),ForeignKey)
+
+
+    def test_line_graph_is_image_file(self):
+        line_graph = LineGraph.objects.get(id=1)
+        line_graph_img = line_graph._meta.get_field('line_graph')
+        self.assertEquals(type(line_graph_img), ImageField)
+
+    def test_line_graph_meta_verbose_name(self):
+        line_graph = LineGraph.objects.get(id=1)
+        self.assertEquals('꺾은선그래프 - 감정일기', line_graph._meta.verbose_name)
+
+
+
 
 
 
@@ -121,7 +153,7 @@ class DiaryWordCloudTest(TestCase):
     def tearDown(self):
         # Clean up after each test
         self.user.delete()
-        self.review.delete()
+        # self.review.delete()
 class LineGraphTest(TestCase):
 
 
