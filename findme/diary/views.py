@@ -137,26 +137,23 @@ class Text_extract_wordcloud(APIView):
         serializer = DiaryListSerializer(diary, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
     
-    def delete(self,request):
+    def delete(self,request,**kwargs):
         """
         감정일기 삭제
 
         ---
-        # /diaries/
+        # /diaries/<id:int>/
         ## headers
-            - Authorization : Token "key 값"
+            - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
 
-        ## parameter
-            - id : Diary id 값 
         """
-        id = request.GET.get("id")
-        queryset = Diary.objects.get(id=id)
-        try:
-            queryset.delete()
-        except:
-            return Response( "Cannot Delete",status=status.HTTP_400_BAD_REQUEST)
-        return Response( "Counsel was deleted",status=status.HTTP_200_OK)
-
+        if kwargs.get('id') is None:
+            return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            diary_id = kwargs.get('id')
+            diary_obj = Diary.objects.get(id=diary_id)
+            diary_obj.delete()
+            return Response("Diary was deleted", status=status.HTTP_200_OK)
 
 class Whole_content_to_wordcloud(APIView):
     """
