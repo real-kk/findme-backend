@@ -67,6 +67,17 @@ class AddTaskQuestion(APIView):
         serializer = TaskQuestionSerializer(questions, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
+class TaskQuestionForCounselor(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        client_email = request.GET.get('client')
+        client = User.objects.get(email=client_email)
+        questions = Task.objects.filter(client=client, counselor=request.user)
+        serializer = TaskQuestionSerializer(questions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 class VideoProcessing(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
