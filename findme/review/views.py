@@ -86,7 +86,7 @@ class Review_upload(APIView):
             return Response("Counsel was deleted", status=status.HTTP_200_OK)
 
 class Review_get_by_counselor(APIView):
-    def get(self, request):
+    def get(self, request,**kwargs):
         """
         특정 상담사의 리뷰 조회
 
@@ -97,15 +97,14 @@ class Review_get_by_counselor(APIView):
         ## paramters
             - id : Counselor id 값
         """
-        counselor_id= request.GET.get('id')
-        
-        counselor = User.objects.get(id=counselor_id)
-
-        review = Review.objects.filter(counselor=counselor)
-
-        serializer = ReviewListSerializer(review, many=True)
-        
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        if kwargs.get('id') is None:
+            return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            counselor = User.objects.get(id=kwargs.get('id'))
+            review = Review.objects.filter(counselor=counselor)
+            serializer = ReviewListSerializer(review, many=True)
+            
+            return Response(serializer.data,status=status.HTTP_200_OK)
 
 class Review_get_by_client(APIView):
     def get(self, request):
