@@ -50,3 +50,10 @@ class CounselClientSerializer(serializers.Serializer):
         model = RegisterCounselDate
         fields = ('client_username', 'client')
 
+class CounselCounselorSerializer(serializers.Serializer):
+    counselor_username = ReadOnlyField(source="counselor.username")
+    counselor_email = ReadOnlyField(source="counselor.email")
+
+    class Meta:
+        model = RegisterCounselDate
+        fields = ('counselor_username', 'counselor_email')

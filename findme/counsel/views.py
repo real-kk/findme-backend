@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.files.images import ImageFile
 from .models import Counsel, RegisterCounselDate
-from .serializer import CounselSerializer, CounselListSerializer, CounselDateSerializer, CounselClientSerializer, CounselPhotoSerializer
+from .serializer import CounselSerializer, CounselListSerializer,CounselCounselorSerializer, CounselDateSerializer, CounselClientSerializer, CounselPhotoSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from users.models import User
@@ -119,6 +119,16 @@ class CounselDate(APIView):
         ## headers
             - Authorization : Token
         """
-        clients = RegisterCounselDate.objects.filter(counselor=request.user)
-        serializer = CounselClientSerializer(clients, many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        if request.user.user_type=="1":
+            clients = RegisterCounselDate.objects.filter(counselor=request.user)
+            if not clients.exists():
+                return Response('등록된 상담 없음',status=status.HTTP_200_OK)
+            serializer = CounselClientSerializer(clients, many=True)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        else:
+            counselor = RegisterCounselDate.objects.filter(client=request.user)
+            if not counselor.exists():
+                 return Response('등록된 상담 없음',status=status.HTTP_200_OK)
+            serializer = CounselCounselorSerializer(counselor, many=True)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        
