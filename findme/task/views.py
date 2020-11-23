@@ -90,6 +90,9 @@ class TaskDetail(APIView):
         #         print("hi") 제목만 반환하는 경우
         return Response(data, status=status.HTTP_200_OK)
     def delete(self,request,**kwargs):
+        if request.user.user_type != '1':
+            return Response("Only Counselor can delete Task", status=status.HTTP_403_FORBIDDEN)
+
         if kwargs.get('id') is None:
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
         else:
