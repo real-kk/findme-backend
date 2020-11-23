@@ -147,6 +147,9 @@ class Text_extract_wordcloud(APIView):
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
 
         """
+        if request.user.user_type != '0':
+            return Response("Only Client can delete Task", status=status.HTTP_403_FORBIDDEN)
+
         if kwargs.get('id') is None:
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
         else:
