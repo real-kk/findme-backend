@@ -11,7 +11,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status
 
 @swagger_auto_schema(method='get', manual_parameters=[test_param])
 @api_view(['GET'])
@@ -70,3 +71,25 @@ class getEachUserType(APIView):
     def get(self, request):
         user_type = User.objects.filter(email=request.user).values('user_type')[0]
         return JsonResponse(user_type, status=200)
+class updateUserIntroduce(APIView):
+    
+    @csrf_exempt
+    def put(self,request,**kwargs):
+        """
+        유저 정보 업데이트
+
+        ---
+        # /users/introduces/<id:int>/
+        ## headers
+            - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
+        """
+
+        if kwargs.get('id') is None:
+            return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            user_id = kwargs.get('id')
+            user_obj = User.objects.get(id=user_id)
+            user_obj.introduce = request.data.get("introduce")
+            user_obj.save()
+        return Response("User was Updated", status=status.HTTP_200_OK)
+
