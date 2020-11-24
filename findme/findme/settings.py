@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'task',
     'storages',
     'drf_yasg',
+    'voice',
 ]
 
 SITE_ID = 1

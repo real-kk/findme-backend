@@ -49,7 +49,8 @@ urlpatterns = [
     path('tasks/', include('task.urls')),
     path('counsels/', include('counsel.urls')),
     path('reviews/', include('review.urls')),
-    path('', include('diary.urls'))
+    path('', include('diary.urls')),
+    path('voices/', include('voice.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

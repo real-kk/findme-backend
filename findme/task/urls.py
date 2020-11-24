@@ -3,7 +3,7 @@ from django.urls import path
 
 
 urlpatterns = [
-    path('videos/<int:id>/', views.TaskUpload.as_view(), name='taskUpload'),
+    path('videos/<int:id>/<str:uuid>/', views.TaskUpload.as_view(), name='taskUpload'),
     path('', views.TaskDetail.as_view(), name='TaskDetail'),
     path('<int:id>/', views.TaskDetail.as_view(), name='TaskDetail'),
     path('questions/', views.AddTaskQuestion.as_view(), name='TaskQuestion'),
