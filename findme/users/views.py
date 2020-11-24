@@ -88,7 +88,10 @@ class updateUserIntroduce(APIView):
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
         else:
             user_id = kwargs.get('id')
-            user_obj = User.objects.get(id=user_id)
+            try:
+                user_obj = User.objects.get(id=user_id)
+            except:
+                return Response("User not Found", status=status.HTTP_400_BAD_REQUEST)
             user_obj.introduce = request.data.get("introduce")
             user_obj.save()
         return Response("User was Updated", status=status.HTTP_200_OK)
