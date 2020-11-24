@@ -90,6 +90,21 @@ class TaskDetail(APIView):
         #     if t.video =="":
         #         print("hi") 제목만 반환하는 경우
         return Response(data, status=status.HTTP_200_OK)
+    def delete(self,request,**kwargs):
+        if request.user.user_type != '1':
+            return Response("Only Counselor can delete Task", status=status.HTTP_403_FORBIDDEN)
+
+        if kwargs.get('id') is None:
+            return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            task_id = kwargs.get('id')
+            try:
+                task_id = Task.objects.get(id=task_id)
+                task_id.delete()
+            except:
+                return Response("Task not founded", status=status.HTTP_400_BAD_REQUEST)
+
+            return Response("Task was deleted", status=status.HTTP_200_OK)
 
 class AddTaskQuestion(APIView):
     authentication_classes = [TokenAuthentication]
