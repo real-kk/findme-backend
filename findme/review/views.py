@@ -81,9 +81,13 @@ class Review_upload(APIView):
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
         else:
             review_id = kwargs.get('id')
-            review_obj = Review.objects.get(id=review_id)
-            review_obj.delete()
-            return Response("Counsel was deleted", status=status.HTTP_200_OK)
+            try:
+                review_obj = Review.objects.get(id=review_id)
+                review_obj.delete()
+                return Response("Review was deleted", status=status.HTTP_200_OK)
+            except:
+                return Response("Review not Found", status=status.HTTP_400_BAD_REQUEST)
+
 
 class Review_get_by_counselor(APIView):
     def get(self, request,**kwargs):
