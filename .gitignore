@@ -227,3 +227,7 @@ findme/users/migrations/
 findme/diary/capstone-ed11e4ac6a67.json
 
 findme/staticfiles/
+
+findme/voice/secret/
+
+findme/test.wav
