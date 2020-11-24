@@ -69,6 +69,7 @@ class TaskUpload(APIView):
             except:
                 return Response('task Not Founded',status= status.HTTP_404_NOT_FOUND)
             selected_task.video = request.data.get('video')
+            selected_task.video.name = str(kwargs.get('uuid')) + '.mp4'
             selected_task.save()
             return Response(serializers.data, status=status.HTTP_201_CREATED)
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -128,6 +129,7 @@ class VideoProcessing(APIView):
         if kwargs.get('id') is None:
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
         new_video = Task.objects.get(pk=kwargs.get("id"))
+        print(new_video.video.name)
         url = 'https://processed-video-lambda.s3.ap-northeast-2.amazonaws.com/' + str(new_video.video.name)
         response = requests.get(url)
         if str(response.status_code) == '200':
@@ -141,6 +143,7 @@ class GetSentiment(APIView):
         filename = request.data.get("key")
         print(filename)
         emotions = list(map(str, sentiments.replace(' ', '').replace('\'', '').rstrip('}').lstrip('{').split(',')))
+        print(emotions)
         task = Task.objects.filter(video=filename)[0]
         task.anger = float(emotions[0].split(':')[1])
         task.contempt = float(emotions[1].split(':')[1])
