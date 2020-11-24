@@ -63,10 +63,59 @@ class Counsel_application(APIView):
         if kwargs.get('id') is None:
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
         else:
+
             counsel_id = kwargs.get('id')
-            counsel_obj = Counsel.objects.get(id=counsel_id)
-            counsel_obj.delete()
-            return Response("Counsel was deleted", status=status.HTTP_200_OK)
+            try:
+                counsel_obj = Counsel.objects.get(id=counsel_id)
+            except:
+                return Response("Counsel not found", status=status.HTTP_400_BAD_REQUEST)
+            if str(counsel_obj.client)== str(request.user.email):
+                counsel_obj.delete()
+                return Response("Counsel was deleted", status=status.HTTP_200_OK)
+            else:
+                return Response("Can only Delete your own posts",status=status.HTTP_403_FORBIDDEN)
+
+    def put(self, request, **kwargs):
+        """
+        신청서 수정
+
+        ---
+        # /counsels/<id:int>/
+        ## headers
+            - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
+        """
+        if kwargs.get('id') is None:
+            return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            counsel_id = kwargs.get('id')
+            try:
+                counsel_obj = Counsel.objects.get(id=counsel_id)
+            except:
+                return Response("Counsel not found", status=status.HTTP_400_BAD_REQUEST)
+
+            if str(counsel_obj.client)== str(request.user.email):
+                selected_counselor_email= request.data.get("counselor")
+                counselor = User.objects.get(email=selected_counselor_email)
+                counsel_obj.counselor=counselor
+
+                counsel_obj.content = request.data.get("content")
+                counsel_obj.phone_number=request.data.get("phone_number")
+                counsel_obj.student_number=request.data.get("student_number")
+                counsel_obj.major=request.data.get("major")
+                counsel_obj.save()
+                return Response("Counsel was updated", status=status.HTTP_200_OK)
+
+            else:
+                return Response("Can only Modify your own posts",status=status.HTTP_403_FORBIDDEN)
+        
+        
+        counsel = Counsel(major=request.data.get("major"), client=request.user,counselor=counselor, create_date=now(),phone_number=request.data.get("phone_number"), student_number=request.data.get("student_number"), content=request.data.get("content"))
+        serializer = CounselSerializer(counsel)
+        if serializer.is_valid: 
+            counsel.save()
+            return Response((serializer.data, counsel.pk), status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CounselPhoto(APIView):
     authentication_classes = [TokenAuthentication]
