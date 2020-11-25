@@ -14,7 +14,7 @@ class User(AbstractUser):
     password = models.CharField('비밀번호', max_length=128)
     user_type = models.CharField('유저타입', max_length= 10, default='') # {내담자 : 0, 상담사 : 1}
     introduce = models.CharField('자기소개', max_length=100, null=True)
-    image = models.ImageField(upload_to="users/", blank=True, null=True)
+    image = models.ImageField('프로필',upload_to="users/", blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['user_type','introduce']

@@ -79,7 +79,7 @@ class updateUserIntroduce(APIView):
         유저 정보 업데이트
 
         ---
-        # /users/introduces/<id:int>/
+        # /users/<id:int>/
         ## headers
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
         """
