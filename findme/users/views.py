@@ -93,6 +93,8 @@ class updateUserIntroduce(APIView):
             except:
                 return Response("User not Found", status=status.HTTP_400_BAD_REQUEST)
             user_obj.introduce = request.data.get("introduce")
+            user_obj.image = request.data.get("image")
+
             user_obj.save()
         return Response("User was Updated", status=status.HTTP_200_OK)
 
