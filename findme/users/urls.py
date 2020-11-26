@@ -3,7 +3,8 @@ from users import views
 
 urlpatterns = [
     path('email', views.EamilRedundantCheck),
-    path('<int:id>/', views.updateUserIntroduce.as_view(),name="update_user_introduce"),
+    path('<int:id>/', views.UserInfo.as_view(),name="user_info"),
+    path('selfinfos/', views.UserInfo.as_view(),name="user_info"),
     path('', views.getUserListsByUserType),
     path('type/', views.getEachUserType.as_view(), name="get_each_user_type")
 ]

@@ -71,8 +71,20 @@ class getEachUserType(APIView):
     def get(self, request):
         user_type = User.objects.filter(email=request.user).values('user_type')[0]
         return JsonResponse(user_type, status=200)
-class updateUserIntroduce(APIView):
-    
+class UserInfo(APIView):
+    def get(self,request):
+        """
+        유저 정보 상세조회
+
+        ---
+        # /users/selfinfos/
+        ## headers
+            - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
+        """
+
+        print(User.objects.values().get(email=request.user.email))
+        return Response( User.objects.values().get(email=request.user.email),status=status.HTTP_200_OK)
+
     @csrf_exempt
     def put(self,request,**kwargs):
         """
