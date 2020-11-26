@@ -108,8 +108,6 @@ class UserInfo(APIView):
             user_obj.image = request.data.get("image")
             user_obj.username = request.data.get("username")
             user_obj.user_type = request.data.get("user_type")
-            user_obj.password = request.data.get("password")
-            
             user_obj.save()
         return Response("User was Updated", status=status.HTTP_200_OK)
 
