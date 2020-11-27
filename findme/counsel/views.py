@@ -77,7 +77,7 @@ class Counsel_application(APIView):
                 counsel_obj.delete()
                 return Response("Counsel was deleted", status=status.HTTP_200_OK)
             else:
-                return Response("Can only Delete your own posts",status=status.HTTP_403_FORBIDDEN)
+                return Response("Can only Delete your own counsel applications",status=status.HTTP_403_FORBIDDEN)
 
     def put(self, request, **kwargs):
         """
@@ -106,11 +106,13 @@ class Counsel_application(APIView):
                 counsel_obj.phone_number=request.data.get("phone_number")
                 counsel_obj.student_number=request.data.get("student_number")
                 counsel_obj.major=request.data.get("major")
+                counsel_obj.time_table = request.data.get("time_table")
+
                 counsel_obj.save()
                 return Response("Counsel was updated", status=status.HTTP_200_OK)
 
             else:
-                return Response("Can only Modify your own posts",status=status.HTTP_403_FORBIDDEN)
+                return Response("Can only Modify your own counsel application",status=status.HTTP_403_FORBIDDEN)
         
         
         counsel = Counsel(major=request.data.get("major"), client=request.user,counselor=counselor, create_date=now(),phone_number=request.data.get("phone_number"), student_number=request.data.get("student_number"), content=request.data.get("content"))
