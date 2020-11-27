@@ -59,7 +59,7 @@ def getUserListsByUserType(request):
             userExist = len(list)
         except:
             return HttpResponse('Server Error',status=404)
-        data = json.loads(serialize('json', list,fields=('email','user_type','username','introduce')))
+        data = json.loads(serialize('json', list,fields=('email','user_type','username','introduce','image','career')))
         if userExist == False:
             return HttpResponse('Users Not Exists',status=403)
         else:
@@ -110,6 +110,7 @@ class UserInfo(APIView):
             user_obj.image.save("user" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".jpg", request.data.get("image"))
             user_obj.username = request.data.get("username")
             user_obj.user_type = request.data.get("user_type")
+            user_obj.career = request.data.get('career')
             user_obj.save()
         return Response("User was Updated", status=status.HTTP_200_OK)
 
