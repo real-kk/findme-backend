@@ -12,11 +12,12 @@ class TaskQuestionSerializer(serializers.ModelSerializer):
     id = ReadOnlyField()
     client_email = ReadOnlyField(source="client.email")
     counselor_username = ReadOnlyField(source="counselor.username")
+    counselor_image = ReadOnlyField(source="counselor.image.name")
     question = serializers.CharField(max_length=100)
 
     class Meta:
         model = Task
-        fields = ['id', 'question', 'client_email', 'counselor_username']
+        fields = ['id', 'question', 'client_email', 'counselor_username','counselor_image']
 
 class SentimentGraphSerializer(serializers.ModelSerializer):
     client_username = ReadOnlyField(source="client.username")
