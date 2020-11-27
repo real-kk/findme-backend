@@ -13,6 +13,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
+from datetime import datetime
 
 @swagger_auto_schema(method='get', manual_parameters=[test_param])
 @api_view(['GET'])
@@ -105,7 +106,8 @@ class UserInfo(APIView):
             except:
                 return Response("User not Found", status=status.HTTP_400_BAD_REQUEST)
             user_obj.introduce = request.data.get("introduce")
-            user_obj.image = request.data.get("image")
+            #user_obj.image = request.data.get("image")
+            user_obj.image.save("user" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".jpg", request.data.get("image"))
             user_obj.username = request.data.get("username")
             user_obj.user_type = request.data.get("user_type")
             user_obj.save()
