@@ -10,6 +10,7 @@ import tempfile
 import json 
 import io
 from PIL import Image
+from datetime import datetime
 
 class CounselModelTest(TestCase):
     @classmethod
@@ -209,7 +210,36 @@ class CounselPhotoTest(TestCase):
         }
         response= self.client.post(url,data,format='multipart')
         self.assertEqual(response.status_code,201)
-        print(response.data)
         self.assertEqual(response.data,"Counsel time table was updated")
 
 
+
+class CounselDateTest(TestCase):
+    @classmethod
+    def setUpTestData(self):
+        self.user_client = User.objects.create(                                   
+            email='user1@gmail.com',                                                                   
+            password='test',
+            username='난상담',
+            user_type=1                                               
+        )
+        self.user_counselor = User.objects.create(                                   
+            email='user0@gmail.com',                                                                   
+            password='test',
+            username='난내담',
+            user_type=0
+        )                                             
+
+    def setUp(self):
+        token, created = Token.objects.get_or_create(user=self.user_counselor)                
+        self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
+
+    # 상담 등록 test
+    def test_A_counsel_photo_add(self):
+        url='/counsels/date/'
+        data={
+            'client':self.user_counselor.email,
+            'counsel_date':datetime.now()
+        }
+        response= self.client.post(url,data=data)       
+        self.assertEqual(response.status_code,201)

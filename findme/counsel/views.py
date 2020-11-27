@@ -154,17 +154,20 @@ class CounselDate(APIView):
         ## headers
             - Authorization : Token
         ## body parameter
-            - counselor : 상담사 user
             - client : 내담자 이메일 [ex> capstone4824@gmail.com]
             - counsel_date : 상담 날짜 [ex> 2020-10-30T20:38:59Z]
         """
         serializer = CounselDateSerializer(data=request.data)
+        print(request.data)
         if serializer.is_valid():
             selected_client_email = request.data.get("client")
             client = User.objects.get(email=selected_client_email)
             counsel_date = RegisterCounselDate(counselor=request.user, client=client)
             counsel_date.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        import pprint
+        pprint.pprint(serializer.errors)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def get(self, request):
@@ -188,4 +191,3 @@ class CounselDate(APIView):
                  return Response('등록된 상담 없음',status=status.HTTP_200_OK)
             serializer = CounselCounselorSerializer(counselor, many=True)
             return Response(serializer.data,status=status.HTTP_200_OK)
-        
