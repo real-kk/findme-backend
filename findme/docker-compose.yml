@@ -20,3 +20,5 @@ services:
       - ./staticfiles:/staticfiles
     expose:
       - '8000'
+    environment:
+      - PYTHONUNBUFFERED=1
