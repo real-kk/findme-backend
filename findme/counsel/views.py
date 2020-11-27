@@ -184,13 +184,13 @@ class CounselDate(APIView):
         if request.user.user_type=="1":
             clients = RegisterCounselDate.objects.filter(counselor=request.user)
             if not clients.exists():
-                return Response('등록된 상담 없음',status=status.HTTP_200_OK)
+                return Response('Registered counsel does not exist',status=status.HTTP_200_OK)
             serializer = CounselClientSerializer(clients, many=True)
-            return Response(serializer.data,status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             counselor = RegisterCounselDate.objects.filter(client=request.user)
             if not counselor.exists():
-                 return Response('등록된 상담 없음',status=status.HTTP_200_OK)
+                 return Response('Registered counsel does not exist',status=status.HTTP_200_OK)
             serializer = CounselCounselorSerializer(counselor, many=True)
             return Response(serializer.data,status=status.HTTP_200_OK)
     

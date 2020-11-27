@@ -24,7 +24,9 @@ class CounselListSerializer(serializers.Serializer):
     id = ReadOnlyField()
     counselor_username= ReadOnlyField(source="counselor.username")
     counselor_email = ReadOnlyField(source='counselor.email')
+    client_image = ReadOnlyField(source='client.image.name')
     client_username = ReadOnlyField(source="client.username")
+    client_introduce = ReadOnlyField(source="client.introduce")
     client_email = ReadOnlyField(source='client.email')
     major = serializers.CharField(max_length=100)
     student_number = serializers.CharField(max_length=100)
@@ -47,6 +49,7 @@ class CounselDateSerializer(serializers.Serializer):
 class CounselClientSerializer(serializers.Serializer):
     client_username = ReadOnlyField(source="client.username")
     client_email = ReadOnlyField(source="client.email")
+    client_image = ReadOnlyField(source="client.image.name")
 
     class Meta:
         model = RegisterCounselDate
