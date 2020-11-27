@@ -47,7 +47,11 @@ class Counsel_application(APIView):
         ## headers
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
         """
-        counsel = Counsel.objects.filter(counselor=request.user)
+        if request.user.user_type=="1":
+            counsel = Counsel.objects.filter(counselor_id=request.user.id)
+
+        elif request.user.user_type=="0":
+            counsel = Counsel.objects.filter(client_id=request.user.id)
         serializer = CounselListSerializer(counsel, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
@@ -122,14 +126,18 @@ class CounselPhoto(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, **kwargs):
+
         if kwargs.get('id') is None:
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
         serializer = CounselPhotoSerializer(data=request.data)
+
         if serializer.is_valid():
             counsel = Counsel.objects.get(pk=kwargs.get("id"))
             counsel.time_table = request.data.get("time_table")
             counsel.save()
             return Response("Counsel time table was updated", status=status.HTTP_201_CREATED)
+        import pprint
+        pprint.pprint(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
