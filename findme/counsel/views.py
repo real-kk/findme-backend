@@ -193,3 +193,26 @@ class CounselDate(APIView):
                  return Response('등록된 상담 없음',status=status.HTTP_200_OK)
             serializer = CounselCounselorSerializer(counselor, many=True)
             return Response(serializer.data,status=status.HTTP_200_OK)
+    
+    def delete(self, request):
+        """
+        등록된 상담 삭제
+        
+        ---
+        # /counsels/date/<id:int>/
+        ## headers
+            - Authorization : Token
+        """
+        if kwargs.get('id') is None:
+                return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            registered_counsel_id = kwargs.get('id')
+            try:
+                registered_counsel_obj = RegisterCounselDate.objects.get(id=registered_counsel_id)
+            except:
+                return Response("Registered Counsel not found", status=status.HTTP_400_BAD_REQUEST)
+            if str(registered_counsel_obj.client)== str(request.user.email):
+                registered_counsel_obj.delete()
+                return Response("Registered Counsel was deleted", status=status.HTTP_200_OK)
+            else:
+                return Response("Can only Delete your own registered Counsel",status=status.HTTP_403_FORBIDDEN)
