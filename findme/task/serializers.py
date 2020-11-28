@@ -21,6 +21,7 @@ class TaskQuestionSerializer(serializers.ModelSerializer):
 
 class SentimentGraphSerializer(serializers.ModelSerializer):
     client_username = ReadOnlyField(source="client.username")
+    graph = serializers.ImageField(use_url=True, allow_null=True)
 
     class Meta:
         model = Task
