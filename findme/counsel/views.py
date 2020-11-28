@@ -160,7 +160,6 @@ class CounselDate(APIView):
             - counsel_date : 상담 날짜 [ex> 2020-10-30T20:38:59Z]
         """
         serializer = CounselDateSerializer(data=request.data)
-        print(request.data)
         if serializer.is_valid():
             selected_client_email = request.data.get("client")
             client = User.objects.get(email=selected_client_email)
