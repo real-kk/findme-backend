@@ -193,7 +193,7 @@ class CounselDate(APIView):
             serializer = CounselCounselorSerializer(counselor, many=True)
             return Response(serializer.data,status=status.HTTP_200_OK)
     
-    def delete(self, request):
+    def delete(self, request,**kwargs):
         """
         등록된 상담 삭제
         
