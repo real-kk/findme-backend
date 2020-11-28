@@ -1,7 +1,7 @@
 from django.test import TestCase,Client
 from users.models import User
-from .models import Counsel
-from .serializer import CounselSerializer
+from .models import Counsel,RegisterCounselDate
+from .serializer import CounselSerializer,CounselListSerializer,CounselDateSerializer
 from django.db.models.fields.files import ImageField
 from rest_framework.authtoken.models import Token
 from django.db.models.fields.related import ForeignKey
@@ -75,16 +75,24 @@ class CounselSerializerTest(TestCase):
         # Set up non-modified objects used by all test methods
         Counsel.objects.create(client=self.user_client,counselor=self.user_counselor,time_table=image_mock,
         major='소프트',student_number='201211222',phone_number='01031332322',content='신청합니다')
+        RegisterCounselDate.objects.create(client=self.user_client,counselor=self.user_counselor)
         self.counsel_id = Counsel.objects.values().first()['id']
 
-    def test_counselor_serializer(self):
+    def test_counsel_serializer(self):
         serializer = CounselSerializer(data=Counsel.objects.values().all().first())
         if not serializer.is_valid():
             import pprint
             pprint.pprint(serializer.errors)
         self.assertEqual(serializer.is_valid(), True)
-
-
+    def test_counsel_list_serializer(self):
+        counsel = Counsel.objects.all()
+        serializer = CounselListSerializer( counsel, many=True)
+    def test_counsel_date_serializer(self): 
+        serializer = CounselDateSerializer(data=RegisterCounselDate.objects.values().all().first())
+        if not serializer.is_valid():
+            import pprint
+            pprint.pprint(serializer.errors)
+        self.assertEqual(serializer.is_valid(), True)
 class CounselApplicationTest(TestCase):
     @classmethod
     def setUpTestData(self):
@@ -105,7 +113,7 @@ class CounselApplicationTest(TestCase):
 
         # Set up non-modified objects used by all test methods
         Counsel.objects.create(client=self.user_client,counselor=self.user_counselor,time_table=image_mock,
-        major='소프트',student_number='201211222',phone_number='01031332322',content='신청합니다')
+        major='소프트',student  _number='201211222',phone_number='01031332322',content='신청합니다')
         self.counsel_id = Counsel.objects.values().first()['id']
     
     def setUp(self):
