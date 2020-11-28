@@ -43,11 +43,7 @@ def create_wordcloud_result(request, user):
     try:
         whole_content = DiaryWholeContent.objects.get(client=user)
     except DiaryWholeContent.DoesNotExist:
-        whole_content = DiaryWholeContent(client=user, image=os.path.abspath('.') + '/diary/not_existing_diary.png')
-        whole_content.save()
-        serializer = WholeContentSerializer(whole_content)
-        DiaryWholeContent.objects.filter(client=user)[0].delete()
-        return ("400", serializer.data)
+        return ("400", 'https://findme-app.s3.ap-northeast-2.amazonaws.com/home/ubuntu/findme-backend/findme/diary/not_existing_diary.png')
     if whole_content.renew_flag:
         image = whole_content.image
     else:
@@ -178,7 +174,7 @@ class Whole_content_to_wordcloud(APIView):
         exist_status, data = create_wordcloud_result(request, request.user)
         if exist_status == '200':
             return Response(data,status=status.HTTP_201_CREATED)
-        return Response(data, status.HTTP_400_BAD_REQUEST)
+        return Response(data, status=status.HTTP_200_OK)
         
     def get(self, request):
         client_email = request.GET.get('client')
@@ -186,7 +182,7 @@ class Whole_content_to_wordcloud(APIView):
         exist_status, data = create_wordcloud_result(request, client)
         if exist_status == '200':
             return Response(data,status=status.HTTP_200_OK)
-        return Response(data, status.HTTP_400_BAD_REQUEST) 
+        return Response(data, status=status.HTTP_200_OK) 
 
 class Text_extract_linegraph(APIView):
     """
