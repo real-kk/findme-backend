@@ -73,7 +73,7 @@ class Counsel_application(APIView):
                 counsel_obj = Counsel.objects.get(id=counsel_id)
             except:
                 return Response("Counsel not found", status=status.HTTP_400_BAD_REQUEST)
-            if str(counsel_obj.client)== str(request.user.email):
+            if str(counsel_obj.counselor)== str(request.user.email):
                 counsel_obj.delete()
                 return Response("Counsel was deleted", status=status.HTTP_200_OK)
             else:
