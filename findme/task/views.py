@@ -6,7 +6,7 @@ from django.core import serializers
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from  rest_framework.permissions import IsAuthenticated
-from .models import Task, SentimentGraph
+from .models import Task
 from django.core.files.storage import File
 import json
 from users.models import User
@@ -17,42 +17,28 @@ from django.core.files.images import ImageFile
 from datetime import datetime
 
 
-def create_sentiment_graph_result(request, user):
-        sentiment_scores = [[] for _ in range(8)]
-        print(sentiment_scores)
-        sentiments = ["anger", 'contempt', 'disgust', 'fear', 'happiness', 'neutral', 'sadness', 'surprise']
-        colors = ['red', 'maroon', 'orange', 'black', 'lime', 'indigo', 'cyan', 'yellow']
-        for idx, sentiment in enumerate(sentiments):
-            print(sentiment)
-            sentiment_scores[idx] = [score.get(sentiment, -1) for score in Task.objects.filter(client=user).values(sentiment)]
-        plt.figure(figsize=(8,8))
-        if len(sentiment_scores[0]) == 1:
-            x = [x_value for x_value in range(1, len(sentiment_scores[0]) + 1)]
-            for i in range(8):
-                plt.plot(x, sentiment_scores[i], color=colors[i], marker='o', label=sentiments[i])
-        elif len(sentiment_scores[0]) < 7:
-            x = [x_value for x_value in range(1, len(sentiment_scores[0]) + 1)]
-            for i in range(8):
-                plt.plot(x, sentiment_scores[i], color=colors[i], label=sentiments[i])
-        else:
-            x = [x_value for x_value in range(1, 8)]
-            for i in range(8):
-                plt.plot(x, sentiment_scores[i][-7:], color=colors[i], label=sentiments[i])
-        plt.legend()
-        plt.axis([1, 7, 0, 1])
-        fig = plt.gcf()
-        file_io = io.BytesIO()
-        fig.savefig(file_io, format="png")
-        graph_image = ImageFile(file_io)
-        try:
-            sentiment_graph = SentimentGraph.objects.get(client=user)
-        except SentimentGraph.DoesNotExist:
-            sentiment_graph = SentimentGraph(client=user)
-        sentiment_graph.image.save("sentiment_graph" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".png", graph_image)
-        sentiment_graph.save()
-        plt.cla()
-        serializer = SentimentGraphSerializer(sentiment_graph)
-        return serializer.data
+def create_sentiment_graph_result(sentiments):
+    length = len(sentiments)
+    sentiment_scores = [[] for _ in range(8)]
+    sentiment_type = ["anger", 'contempt', 'disgust', 'fear', 'happiness', 'neutral', 'sadness', 'surprise']
+    colors = ['red', 'maroon', 'orange', 'black', 'lime', 'indigo', 'cyan', 'yellow']
+    for second in sentiments:
+        sentiment_values = list(map(str, sentiments.get(second).split('\n')))[:-1]
+        for idx, each_value in enumerate(sentiment_values):
+            sentiment_scores[idx].append(float(each_value.split(':')[1]))
+    plt.figure(figsize=(8,8))
+    x = list(sentiments.keys())
+    for i in range(8):
+        plt.plot(x, sentiment_scores[i], color=colors[i], label=sentiment_type[i])
+    plt.legend()
+    plt.axis([1, 7, 0, 1])
+    plt.xlabel('second')
+    plt.ylabel('sentiment_score')
+    fig = plt.gcf()
+    file_io = io.BytesIO()
+    fig.savefig(file_io, format="png")
+    graph_image = ImageFile(file_io)
+    return graph_image
 
 class TaskUpload(APIView):
         
@@ -78,18 +64,7 @@ class TaskDetail(APIView):
             
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    def get(self, request):
-        task_id=request.GET.get('task_id',None)
-        try:
-            Task.objects.get(id=task_id)
-            task = Task.objects.filter(id=task_id)
-        except:
-            return Response('Task Not Exist Error',status=status.HTTP_400_BAD_REQUEST)
-        data=task.values('id','title','create_date','video')
-        # for t in task:
-        #     if t.video =="":
-        #         print("hi") 제목만 반환하는 경우
-        return Response(data, status=status.HTTP_200_OK)
+
     def delete(self,request,**kwargs):
         if request.user.user_type != '1':
             return Response("Only Counselor can delete Task", status=status.HTTP_403_FORBIDDEN)
@@ -157,18 +132,11 @@ class GetSentiment(APIView):
         sentiments = request.data.get("sentiments")
         filename = request.data.get("key")
         print(filename)
-        emotions = list(map(str, sentiments.replace(' ', '').replace('\'', '').rstrip('}').lstrip('{').split(',')))
-        print(emotions)
         task = Task.objects.filter(video=filename)[0]
-        task.anger = float(emotions[0].split(':')[1])
-        task.contempt = float(emotions[1].split(':')[1])
-        task.disgust = float(emotions[2].split(':')[1])
-        task.fear = float(emotions[3].split(':')[1])
-        task.happiness = float(emotions[4].split(':')[1])
-        task.neutral = float(emotions[5].split(':')[1])
-        task.sadness = float(emotions[6].split(':')[1])
-        task.surprise = float(emotions[7].split(':')[1])
+        sentiment_graph = create_sentiment_graph_result(sentiments)
+        task.graph.save("sentiment_graph" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".png", sentiment_graph)
         task.save()
+        plt.cla()
         return Response(request.data, status=status.HTTP_200_OK)
 
 class MakeSentimentLinegraph(APIView):
@@ -176,11 +144,14 @@ class MakeSentimentLinegraph(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        data = create_sentiment_graph_result(request, request.user)
-        return Response(data, status=status.HTTP_201_CREATED)
+        task = Task.objects.get(client=request.user)
+        serializer = SentimentGraphSerializer(task)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
         
     def get(self, request):
         client_email = request.GET.get('client')
         client = User.objects.get(email=client_email)
-        data = create_sentiment_graph_result(request, client)
-        return Response(data, status=status.HTTP_200_OK)
+        task = create_sentiment_graph_result(request, client)
+        serializer = SentimentGraphSerializer(task)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
