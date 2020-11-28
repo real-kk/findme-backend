@@ -53,7 +53,7 @@ class CounselModelTest(TestCase):
 
 
 
-class CounselSerializerTest(TestCase):
+class SerializerTest(TestCase):
 
     @classmethod
     def setUpTestData(self):
@@ -211,6 +211,7 @@ class CounselPhotoTest(TestCase):
     # 상담 신청서 업로드 test
     def test_A_counsel_photo_add(self):
         photo_file = self.generate_photo_file()
+        print(photo_file)
         kwargs=str(Counsel.objects.values().first()["id"])
         url = '/counsels/photo/'+kwargs+'/'
         data={
@@ -245,7 +246,7 @@ class CounselDateTest(TestCase):
         self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
 
     # 상담 등록 test
-    def test_A_counsel_photo_add(self):
+    def test_A_counsel_date_add(self):
         url='/counsels/date/'
         data={
             'client':self.user_counselor.email,
@@ -254,16 +255,7 @@ class CounselDateTest(TestCase):
         response= self.client.post(url,data=data)       
         self.assertEqual(response.status_code,201)
     #등록된 상담 조회 test
-    def test_B_counsel_photo_get(self):
+    def test_B_counsel_date_get(self):
         url='/counsels/date/'
         response = self.client.get(url)       
         self.assertEqual(response.status_code,200)
-    #등록된 상담 삭제 test
-    def test_C_counsel_photo_delete(self):
-        url='/counsels/date/'
-        print(RegisterCounselDate.objects.values().first()['id'])
-
-        kwargs= RegisterCounselDate.objects.values().first()['id']
-        response = self.client.delete(url)       
-        self.assertEqual(response.status_code,200)
-        self.assertEqual(response.message,'Registered Counsel was deleted')
