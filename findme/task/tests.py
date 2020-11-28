@@ -1,5 +1,7 @@
 from django.test import TestCase
-
+import mock
+from django.core.files import File
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase,Client
 from users.models import User
 from .models import Task
@@ -9,6 +11,7 @@ from rest_framework.authtoken.models import Token
 from django.db.models.fields.related import ForeignKey
 from django.core.files.images import ImageFile
 import tempfile
+from django.db.models.fields.files import FileField
 import json 
 from PIL import Image
 from datetime import datetime
@@ -58,3 +61,32 @@ class TaskModelTest(TestCase):
         column = task._meta.get_field('surprise')
         self.assertEquals(type(column),FloatField)
 
+
+
+
+class SerializerTest(TestCase):
+
+    @classmethod
+    def setUpTestData(self):
+        self.user_counselor = User.objects.create(                                   
+            email='super1@gmail.com',                                                                   
+            password='test',
+            username='김상담',
+            user_type=1                                                    
+        )
+        self.user_client = User.objects.create(                                   
+            email='super2@gmail.com',                                                                   
+            password='test',
+            username='김내담',
+            user_type=1                                                    
+        )
+        self.video = SimpleUploadedFile("file.mp4", b"file_content", content_type="video/mp4")
+
+        Task.objects.create(client=self.user_client,counselor=self.user_counselor,video=self.video,question="질문",anger='0.111',disgust='0.111',fear='0.131',happiness='0.414',neutral='0.01',
+        sadness='0.34',surprise='0.13')
+        self.task_id = Task.objects.values().first()['id']
+
+    def test_task_serializer(self):
+        serializer = TaskSerializer(Task.objects.values().all().first()['video'])
+        print(serializer.video)
+    #어렵다..
