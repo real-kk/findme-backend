@@ -16,16 +16,21 @@ from django.db.models.fields import FloatField
 class TaskModelTest(TestCase):
     @classmethod
     def setUpTestData(self):
-        self.user = User.objects.create(                                   
-            email='super@gmail.com',                                                                   
+        self.user_counselor = User.objects.create(                                   
+            email='super1@gmail.com',                                                                   
             password='test',
-            username='강낭콩'                                                    
+            username='김상담',
+            user_type=1                                                    
         )
-        file = tempfile.NamedTemporaryFile(suffix='.png')
-        image_mock= ImageFile(file, name=file.name)
-  
-        Task.objects.create(client=self.user,counselor=self.user,question="질문",anger='0.111',disgust='0.111',fear='0.131',happiness='0.414',neutral='0.01',
-        sadness='0.34',surprise='0.13')
+        self.user_client = User.objects.create(                                   
+            email='super2@gmail.com',                                                                   
+            password='test',
+            username='김내담',
+            user_type=1                                                    
+        )
+        self.video = SimpleUploadedFile("file.mp4", b"file_content", content_type="video/mp4")
+
+        Task.objects.create(client=self.user_client,counselor=self.user_counselor,video=self.video,question="질문",anger='0.111',disgust='0.111',fear='0.131',happiness='0.414',neutral='0.01',sadness='0.34',surprise='0.13')
         self.task_id = Task.objects.values().first()['id']
     def test_client_is_foreignkey(self):
         task=Task.objects.get(id=self.task_id)
