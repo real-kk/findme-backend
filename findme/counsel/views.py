@@ -47,6 +47,7 @@ class Counsel_application(APIView):
         ## headers
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
         """
+        print(Counsel.objects.values().all())
         if request.user.user_type=="1":
             counsel = Counsel.objects.filter(counselor_id=request.user.id)
 
@@ -73,14 +74,14 @@ class Counsel_application(APIView):
             try:
                 counsel_obj = Counsel.objects.get(id=counsel_id)
                 counsel_date_id= request.GET.get('counsel_date_id')
-
-                register_counsel_date = RegisterCounselDate.objects.get(id =counsel_date_id )
-                
-                register_counsel_date.content= counsel_obj.content
-                register_counsel_date.time_table= counsel_obj.time_table
-                register_counsel_date.major= counsel_obj.major
-                register_counsel_date.student_number= counsel_obj.student_number
-                register_counsel_date.phone_number= counsel_obj.phone_number
+                if counsel_date_id != "-1":
+                    register_counsel_date = RegisterCounselDate.objects.get(id =counsel_date_id )
+                    
+                    register_counsel_date.content= counsel_obj.content
+                    register_counsel_date.time_table= counsel_obj.time_table
+                    register_counsel_date.major= counsel_obj.major
+                    register_counsel_date.student_number= counsel_obj.student_number
+                    register_counsel_date.phone_number= counsel_obj.phone_number
 
                 
             except:
