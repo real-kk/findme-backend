@@ -9,6 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from users.models import User
 from django.utils.timezone import now
 import json
+from datetime import datetime
+
 class Counsel_application(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -148,7 +150,8 @@ class CounselPhoto(APIView):
 
         if serializer.is_valid():
             counsel = Counsel.objects.get(pk=kwargs.get("id"))
-            counsel.time_table = request.data.get("time_table")
+            time_table = request.data.get("time_table")
+            counsel.time_table.save("time_table" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".png", time_table)
             counsel.save()
             return Response("Counsel time table was updated", status=status.HTTP_201_CREATED)
         import pprint
