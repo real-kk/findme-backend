@@ -144,14 +144,13 @@ class MakeSentimentLinegraph(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        task = Task.objects.get(client=request.user)
+        task = Task.objects.get(id=request.data.get('id'))
         serializer = SentimentGraphSerializer(task)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         
     def get(self, request):
-        client_email = request.GET.get('client')
-        client = User.objects.get(email=client_email)
-        task = create_sentiment_graph_result(request, client)
+        pk = request.GET.get('id')
+        task = Task.objects.get(id=pk)
         serializer = SentimentGraphSerializer(task)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
