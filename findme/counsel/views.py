@@ -8,6 +8,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from users.models import User
 from django.utils.timezone import now
+import json
+from datetime import datetime
 
 class Counsel_application(APIView):
     authentication_classes = [TokenAuthentication]
@@ -47,6 +49,7 @@ class Counsel_application(APIView):
         ## headers
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
         """
+        print(Counsel.objects.values().all())
         if request.user.user_type=="1":
             counsel = Counsel.objects.filter(counselor_id=request.user.id)
 
@@ -64,6 +67,7 @@ class Counsel_application(APIView):
         ## headers
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
         """
+
         if kwargs.get('id') is None:
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -71,6 +75,17 @@ class Counsel_application(APIView):
             counsel_id = kwargs.get('id')
             try:
                 counsel_obj = Counsel.objects.get(id=counsel_id)
+                counsel_date_id= request.GET.get('counsel_date_id')
+                if counsel_date_id != "-1":
+                    register_counsel_date = RegisterCounselDate.objects.get(id =counsel_date_id )
+                    
+                    register_counsel_date.content= counsel_obj.content
+                    register_counsel_date.time_table= counsel_obj.time_table
+                    register_counsel_date.major= counsel_obj.major
+                    register_counsel_date.student_number= counsel_obj.student_number
+                    register_counsel_date.phone_number= counsel_obj.phone_number
+
+                
             except:
                 return Response("Counsel not found", status=status.HTTP_400_BAD_REQUEST)
             if str(counsel_obj.counselor)== str(request.user.email):
@@ -135,7 +150,8 @@ class CounselPhoto(APIView):
 
         if serializer.is_valid():
             counsel = Counsel.objects.get(pk=kwargs.get("id"))
-            counsel.time_table = request.data.get("time_table")
+            time_table = request.data.get("time_table")
+            counsel.time_table.save("time_table" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".png", time_table)
             counsel.save()
             return Response("Counsel time table was updated", status=status.HTTP_201_CREATED)
         import pprint
@@ -163,9 +179,9 @@ class CounselDate(APIView):
         if serializer.is_valid():
             selected_client_email = request.data.get("client")
             client = User.objects.get(email=selected_client_email)
-            counsel_date = RegisterCounselDate(counselor=request.user, client=client)
-            counsel_date.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            counsel_date1= RegisterCounselDate.objects.create(counselor=request.user, client=client)
+            counsel_date_id = str(counsel_date1)[28:-1]
+            return Response(data={"id":counsel_date_id} ,status=status.HTTP_201_CREATED)
         import pprint
         pprint.pprint(serializer.errors)
 

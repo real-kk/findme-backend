@@ -74,8 +74,8 @@ class TaskDetail(APIView):
         else:
             task_id = kwargs.get('id')
             try:
-                task_id = Task.objects.get(id=task_id)
-                task_id.delete()
+                task = Task.objects.get(id=task_id)
+                task.delete()
             except:
                 return Response("Task not founded", status=status.HTTP_400_BAD_REQUEST)
 

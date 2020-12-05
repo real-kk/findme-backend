@@ -168,8 +168,15 @@ class TaskVideoTest(TestCase):
         self.video = SimpleUploadedFile("file.mp4", b"file_content", content_type="video/mp4")
         response =self.client.post(url,data={"video":self.video})
         self.assertEqual(response.status_code,201)
- 
-    def test_c_task_video_delete(self):
+
+    def test_c_task_video_processing_upload(self):
+        url ="/tasks/process_videos/"+str(self.task_id)+"/"
+        response =self.client.get(url)
+        self.assertEqual("https://processed-video-lambda." in response.data,True)
+        self.assertEqual(response.status_code,200)
+
+        
+    def test_d_task_video_delete(self):
         task_id = Task.objects.values().first()['id']
         url = '/tasks/'+str(task_id)+"/"
         response =self.client.delete(url)
