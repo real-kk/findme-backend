@@ -33,7 +33,7 @@ class TaskModelTest(TestCase):
         )
         self.video = SimpleUploadedFile("file.mp4", b"file_content", content_type="video/mp4")
 
-        Task.objects.create(client=self.user_client,counselor=self.user_counselor,video=self.video,question="질문",anger='0.111',disgust='0.111',fear='0.131',happiness='0.414',neutral='0.01',sadness='0.34',surprise='0.13')
+        Task.objects.create(client=self.user_client,counselor=self.user_counselor,question="질문")
         self.task_id = Task.objects.values().first()['id']
     def test_client_is_foreignkey(self):
         task=Task.objects.get(id=self.task_id)
@@ -43,23 +43,6 @@ class TaskModelTest(TestCase):
         task=Task.objects.get(id=self.task_id)
         counselor = task._meta.get_field('counselor')
         self.assertEquals(type(counselor),ForeignKey)
-
-    def test_is_float(self):
-        task=Task.objects.get(id=self.task_id)
-        column = task._meta.get_field('anger')
-        self.assertEquals(type(column),FloatField)
-        column = task._meta.get_field('disgust')
-        self.assertEquals(type(column),FloatField)
-        column = task._meta.get_field('fear')
-        self.assertEquals(type(column),FloatField)
-        column = task._meta.get_field('happiness')
-        self.assertEquals(type(column),FloatField)
-        column = task._meta.get_field('neutral')
-        self.assertEquals(type(column),FloatField)
-        column = task._meta.get_field('sadness')
-        self.assertEquals(type(column),FloatField)
-        column = task._meta.get_field('surprise')
-        self.assertEquals(type(column),FloatField)
 
 
 
@@ -82,8 +65,7 @@ class SerializerTest(TestCase):
         )
         self.video = SimpleUploadedFile("file.mp4", b"file_content", content_type="video/mp4")
 
-        Task.objects.create(client=self.user_client,counselor=self.user_counselor,video=self.video,question="질문",anger='0.111',disgust='0.111',fear='0.131',happiness='0.414',neutral='0.01',
-        sadness='0.34',surprise='0.13')
+        Task.objects.create(client=self.user_client,counselor=self.user_counselor,question="질문")
         self.task_id = Task.objects.values().first()['id']
 
     def test_task_serializer(self):
@@ -107,8 +89,7 @@ class TaskQuestionTest(TestCase):
             username='김내담',
             user_type=1                                                    
         )
-        Task.objects.create(client=self.user_client,counselor=self.user_counselor,question="질문",anger='0.111',disgust='0.111',fear='0.131',happiness='0.414',neutral='0.01',
-        sadness='0.34',surprise='0.13')
+        Task.objects.create(client=self.user_client,counselor=self.user_counselor,question="질문")
 
         token, created = Token.objects.get_or_create(user=self.user_counselor)                
         self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
@@ -150,8 +131,7 @@ class TaskVideoTest(TestCase):
             user_type=1                                                    
         )
 
-        Task.objects.create(client=self.user_client,counselor=self.user_counselor,question="질문",anger='0.111',disgust='0.111',fear='0.131',happiness='0.414',neutral='0.01',
-        sadness='0.34',surprise='0.13')
+        Task.objects.create(client=self.user_client,counselor=self.user_counselor,question="질문")
         self.task_id = Task.objects.values().first()['id']
 
     def setUp(self):
