@@ -75,17 +75,6 @@ class Counsel_application(APIView):
             counsel_id = kwargs.get('id')
             try:
                 counsel_obj = Counsel.objects.get(id=counsel_id)
-                counsel_date_id= request.GET.get('counsel_date_id')
-                if counsel_date_id != "-1":
-                    register_counsel_date = RegisterCounselDate.objects.get(id =counsel_date_id )
-                    
-                    register_counsel_date.content= counsel_obj.content
-                    register_counsel_date.time_table= counsel_obj.time_table
-                    register_counsel_date.major= counsel_obj.major
-                    register_counsel_date.student_number= counsel_obj.student_number
-                    register_counsel_date.phone_number= counsel_obj.phone_number
-
-                
             except:
                 return Response("Counsel not found", status=status.HTTP_400_BAD_REQUEST)
             if str(counsel_obj.counselor)== str(request.user.email):

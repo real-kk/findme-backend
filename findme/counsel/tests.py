@@ -117,8 +117,8 @@ class CounselApplicationTest(TestCase):
         self.counsel_id = Counsel.objects.values().first()['id']
     
     def setUp(self):
-        token, created = Token.objects.get_or_create(user=self.user_client)                
-        # token, created = Token.objects.get_or_create(user=self.user_counselor)                
+        # token, created = Token.objects.get_or_create(user=self.user_client)                
+        token, created = Token.objects.get_or_create(user=self.user_counselor)                
         self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
 
     # 상담 신청서 업로드 test
@@ -144,7 +144,7 @@ class CounselApplicationTest(TestCase):
         response= self.client.get(url,content_type='application/json')
         self.assertEqual(response.status_code,200)
     
-    # 상담 신청서 수정 test
+    # 상담 신청서 수정 test   /// token 을 client 로 해야됨
     def test_C_text_application_put(self):
         url='/counsels/'
         
@@ -156,17 +156,17 @@ class CounselApplicationTest(TestCase):
             'phone_number':'01099999999',
             'content':'테스트 드리븐 개발은 나를 성장시켜주고 새로운 것을 배우게 도와주는 즐거운 일이다. 어렵고 복잡하지만, 잘 이겨내서 좋은 개발자가 될것이다.'
         }
-        kwargs="1"
+        kwargs=str(Counsel.objects.values().first()["id"])
         response= self.client.put(url+kwargs+'/',data=json.dumps(counsels_data),content_type='application/json')
         self.assertEqual(response.status_code,200)
         self.assertEqual(response.data,'Counsel was updated')
 
 
 
-    # 상담 신청서 삭제 test
+    # 상담 신청서 삭제 test  // token 을 counselor 로 해야함
     def test_D_text_application_delete(self):
         url='/counsels/'
-        kwargs="1"
+        kwargs=str(Counsel.objects.values().first()["id"])
         response= self.client.delete(url+kwargs+'/',content_type='application/json')
         self.assertEqual(response.status_code,200)
         self.assertEqual(response.data,'Counsel was deleted')
@@ -211,7 +211,6 @@ class CounselPhotoTest(TestCase):
     # 상담 신청서 업로드 test
     def test_A_counsel_photo_add(self):
         photo_file = self.generate_photo_file()
-        print(photo_file)
         kwargs=str(Counsel.objects.values().first()["id"])
         url = '/counsels/photo/'+kwargs+'/'
         data={
