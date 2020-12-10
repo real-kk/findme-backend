@@ -14,6 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from datetime import datetime
+from django.contrib.auth.hashers import check_password
 
 @swagger_auto_schema(method='get', manual_parameters=[test_param])
 @api_view(['GET'])
@@ -113,4 +114,29 @@ class UserInfo(APIView):
             user_obj.career = request.data.get('career')
             user_obj.save()
         return Response("User was Updated", status=status.HTTP_200_OK)
+  
+class PasswordReset(APIView):
+        
+    def post(self,request):
+        """
+        비밀번호 변경
 
+        ---
+        # /users/<id:int>/
+        ## headers
+            - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
+        """
+        context= {}
+        current_password = request.POST.get("origin_password")
+        user = request.user
+        if check_password(current_password,user.password):
+            new_password = request.POST.get("password1")
+            password_confirm = request.POST.get("password2")
+            if new_password == password_confirm:
+                user.set_password(new_password)
+                user.save()
+                return Response("User was Password Updated", status=status.HTTP_200_OK)
+            else:
+                return Response("Does not match Password1 and Password2 ", status=status.HTTP_400_OK)
+        else:
+            return Response("Wrong password", status=status.HTTP_403_FORBIDDEN)

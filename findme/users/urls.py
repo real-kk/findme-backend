@@ -6,5 +6,7 @@ urlpatterns = [
     path('<int:id>/', views.UserInfo.as_view(),name="user_info"),
     path('selfinfos/', views.UserInfo.as_view(),name="user_info"),
     path('', views.getUserListsByUserType),
-    path('type/', views.getEachUserType.as_view(), name="get_each_user_type")
+    path('type/', views.getEachUserType.as_view(), name="get_each_user_type"),
+    path('reset/password/', views.PasswordReset.as_view(), name="PasswordReset")
+
 ]
