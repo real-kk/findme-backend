@@ -49,13 +49,3 @@ class UserTest(TestCase):
         self.assertEqual(response.status_code,200)
         self.assertEqual(len(response.json().get("key"))>10,True)
 
-    #약력 수정 test  lambda 에 있는 이미지를 사용해야하기때문에 오류가 뜬다.
-    def test_user_update(self):
-        #smoke test
-        info={
-            'introduce':'약력 대학교1년 대학교2년 대학교3년'
-        }
-        #로그인이 안됨
-        response = self.client.put('/users/'+str(self.user_id)+"/",data=info,content_type='application/json')
-        # self.assertEqual(response.status_code,200)
-        # self.assertEqual(response.json(),'User was Updated')

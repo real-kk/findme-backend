@@ -158,8 +158,8 @@ class CounselApplicationTest(TestCase):
         }
         kwargs=str(Counsel.objects.values().first()["id"])
         response= self.client.put(url+kwargs+'/',data=json.dumps(counsels_data),content_type='application/json')
-        self.assertEqual(response.status_code,200)
-        self.assertEqual(response.data,'Counsel was updated')
+        self.assertEqual(response.status_code,403)
+        self.assertEqual(response.data,'Can only Modify your own counsel application')
 
 
 
