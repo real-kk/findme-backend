@@ -101,6 +101,16 @@ class Text_extract_wordcloud(APIView):
         """
         serializer = DiarySerializer(data=request.data)
         if serializer.is_valid():
+
+            today= datetime.now().strftime('%Y-%m-%d')
+            is_exist = Diary.objects.filter(create_date=today)
+            print(Diary.objects.values())
+            print(len(is_exist))
+            if len(is_exist)>0:
+                return Response("Today Diary Existed", status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+
             text = request.data['content'].encode('euc-kr').decode('euc-kr')
             # analyze sentiment
             credentials = service_account.Credentials.from_service_account_file(os.path.abspath('.') + '/diary/capstone-ed11e4ac6a67.json')
@@ -108,7 +118,7 @@ class Text_extract_wordcloud(APIView):
             document = language_v1.Document(content=text, type_=language_v1.Document.Type.PLAIN_TEXT)
             sentiment = client.analyze_sentiment(request={'document': document}).document_sentiment
             # Diary Model 
-            diary = Diary(title=request.data.get('title'), content=request.data.get('content'), client=request.user, create_date=datetime.now(), sentiment_score=sentiment.score)
+            diary = Diary(title=request.data.get('title'), content=request.data.get('content'), client=request.user, create_date=datetime.now().strftime('%Y-%m-%d'), sentiment_score=sentiment.score)
             diary.save()
             # Whole Content Model Refresh
             try:
