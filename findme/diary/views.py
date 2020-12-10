@@ -104,8 +104,6 @@ class Text_extract_wordcloud(APIView):
 
             today= datetime.now().strftime('%Y-%m-%d')
             is_exist = Diary.objects.filter(create_date=today)
-            print(Diary.objects.values())
-            print(len(is_exist))
             if len(is_exist)>0:
                 return Response("Today Diary Existed", status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
