@@ -84,7 +84,6 @@ class UserInfo(APIView):
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
         """
 
-        print(User.objects.values().get(email=request.user.email))
         return Response( User.objects.values().get(email=request.user.email),status=status.HTTP_200_OK)
 
     @csrf_exempt
@@ -122,16 +121,21 @@ class PasswordReset(APIView):
         비밀번호 변경
 
         ---
-        # /users/<id:int>/
+        # /users/reset/password/
         ## headers
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
+        ## body parameter
+            - original_password : 기존 비밀번호
+            - new_password1 : 새비밀번호1
+            - new_password2 : 새비밀번호2
+
         """
         context= {}
         current_password = request.POST.get("origin_password")
         user = request.user
         if check_password(current_password,user.password):
-            new_password = request.POST.get("password1")
-            password_confirm = request.POST.get("password2")
+            new_password = request.POST.get("new_password1")
+            password_confirm = request.POST.get("new_password2")
             if new_password == password_confirm:
                 user.set_password(new_password)
                 user.save()
