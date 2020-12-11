@@ -21,7 +21,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['user_type','introduce']
 
     objects = CustomUserManager()
-
+    isactive = models.BooleanField('인증유무',default=False)
     realname = models.CharField('이름', blank=True, max_length=50)
     phone = models.CharField('휴대폰번호', blank=True, max_length=100)
     address = models.CharField('주소', blank=True, max_length=200)

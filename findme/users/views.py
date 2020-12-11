@@ -15,6 +15,25 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from datetime import datetime
 from django.contrib.auth.hashers import check_password
+from django.core.exceptions import ValidationError
+from .token import account_activation_token
+from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
+from django.utils.encoding import force_text,force_bytes
+class Activate(APIView):
+    def get(self,request, uidb64, token):
+        print("activate in VIEW")
+        try:
+            email= force_text( urlsafe_base64_decode(uidb64))
+            user = User.objects.get(email=email)
+            if account_activation_token.check_token(user,token):
+                user.isactive = True
+                user.save()
+                return Response( "Email verification was successful.",status=status.HTTP_200_OK)
+            return Response( "Token Auth Fail", status=status.HTTP_401_UNAUTHORIZED)
+        except ValidationError:
+            return Response("Type Error",status=status.HTTP_400_BAD_REQUEST)
+        except KeyError:
+            return Response("Invalid Key", status=status.HTTP_400_BAD_REQUEST)
 
 @swagger_auto_schema(method='get', manual_parameters=[test_param])
 @api_view(['GET'])
@@ -48,7 +67,7 @@ def getUserListsByUserType(request):
     """
     내담자/상담자 리스트 조회 API
 
-    ---
+    --- 
     # /users/
     ## query parameter
         - user_type : 상담자/내담자 구분 ( 내담자 : 0 ,상담자 : 1 )
