@@ -150,11 +150,14 @@ class PasswordReset(APIView):
         ## headers
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
         ## body parameter
-            - original_password : 기존 비밀번호
+            - origin_password : 기존 비밀번호
             - new_password1 : 새비밀번호1
             - new_password2 : 새비밀번호2
 
         """
+        print(request.POST.get("origin_password"))
+        print(request.POST.get("new_password1"))
+        print(request.POST.get("new_password2"))
         context= {}
         current_password = request.POST.get("origin_password")
         user = request.user
