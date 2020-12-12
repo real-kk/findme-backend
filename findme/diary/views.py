@@ -17,6 +17,9 @@ from google.oauth2 import service_account
 import os
 import re
 from users.models import User
+from PIL import Image
+import requests
+import numpy as np
 
 def make_wordcloud(text):
     mecab = Mecab()
@@ -27,8 +30,11 @@ def make_wordcloud(text):
         if tag in ['VA', 'NNG', 'NNP', 'NNB', 'NNBC', 'NR', 'NP'] and len(word) > 1:
             noun_adj_list.append(word)
     counts = Counter(noun_adj_list)
-    tags = counts.most_common(10)
-    wordcloud = WordCloud(font_path='/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf', background_color="white", width=300, height=300)
+    tags = counts.most_common(40)
+    url = "https://findme-app.s3.ap-northeast-2.amazonaws.com/home/cloud.png"
+    response = requests.get(url)
+    cloud_mask = np.array(Image.open(io.BytesIO(response.content)))
+    wordcloud = WordCloud(font_path='/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf', background_color="white", width=300, height=300, mask=cloud_mask)
     cloud = wordcloud.generate_from_frequencies(dict(tags))
     plt.figure(figsize=(22, 22))
     plt.imshow(cloud, interpolation='lanczos')
@@ -103,7 +109,7 @@ class Text_extract_wordcloud(APIView):
         if serializer.is_valid():
 
             today= datetime.now().strftime('%Y-%m-%d')
-            is_exist = Diary.objects.filter(create_date=today)
+            is_exist = Diary.objects.filter(client=request.user).filter(create_date=today)
             if len(is_exist)>0:
                 return Response("Today Diary Existed", status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
