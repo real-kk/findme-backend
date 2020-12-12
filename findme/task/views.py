@@ -20,14 +20,17 @@ from datetime import datetime
 def create_sentiment_graph_result(sentiments):
     length = len(sentiments)
     sentiment_scores = [[] for _ in range(8)]
-    sentiment_type = ["anger", 'contempt', 'disgust', 'fear', 'happiness', 'neutral', 'sadness', 'surprise']
+    sentiment_type = ["화남", "경멸", "역겨움", "공포", "행복", "무표정", "슬픔", "놀람"]
     colors = ['red', 'maroon', 'orange', 'black', 'lime', 'indigo', 'cyan', 'yellow']
     for second in sentiments:
         sentiment_values = list(map(str, sentiments.get(second).split('\n')))[:-1]
         for idx, each_value in enumerate(sentiment_values):
             sentiment_scores[idx].append(float(each_value.split(':')[1]))
+    plt.rcParams['font.family'] = 'NanumGothic'
+    plt.rcParams['font.size'] = 8
     plt.figure(figsize=(8,8))
     x = list(sentiments.keys())
+    x.sort()
     for i in range(8):
         plt.plot(x, sentiment_scores[i], color=colors[i], label=sentiment_type[i])
     plt.legend()
