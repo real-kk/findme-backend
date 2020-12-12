@@ -46,6 +46,10 @@ class UserTest(TestCase):
             'user_type': 1
         }
         response = self.client.post('/rest-auth/login/',data=login_info)
+        print(response.data['user'].isactive)
+        print(response.data['user'].values)
+        print(response.data['user'].get('isactive'))
+
         self.assertEqual(response.status_code,200)
         self.assertEqual(len(response.json().get("key"))>10,True)
 
