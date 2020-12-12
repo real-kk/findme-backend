@@ -35,6 +35,12 @@ class Activate(APIView):
         except KeyError:
             return Response("Invalid Key", status=status.HTTP_400_BAD_REQUEST)
 
+class UserIsActive(APIView):
+    def get(self, request):
+        isactive = request.user.isactive
+        return Response( isactive,status=status.HTTP_200_OK)
+
+
 @swagger_auto_schema(method='get', manual_parameters=[test_param])
 @api_view(['GET'])
 def EamilRedundantCheck(request):
