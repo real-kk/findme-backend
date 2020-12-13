@@ -3,8 +3,11 @@ from .models import User
 from rest_framework.authtoken.models import Token
 from django.core.files.images import ImageFile
 import tempfile
+from PIL import Image
+import json
+from datetime import datetime
+import base64
 
-# Create your tests here.
 class UserTest(TestCase):
     # test용 데이터
     def setUp(self):
@@ -46,10 +49,21 @@ class UserTest(TestCase):
             'user_type': 1
         }
         response = self.client.post('/rest-auth/login/',data=login_info)
-        print(response.data['user'].isactive)
-        print(response.data['user'].values)
-        print(response.data['user'].get('isactive'))
-
         self.assertEqual(response.status_code,200)
         self.assertEqual(len(response.json().get("key"))>10,True)
 
+    #유저정보 업데이트 test 
+    def test_user_information_update(self):
+        file = tempfile.NamedTemporaryFile(suffix='.png')
+        image_mock= ImageFile(file, name=file.name)
+
+        data={
+            'introduce': "저는 첫번째 상담사 입니다.",
+            'username' : '김상담',
+            'career'   : 'A대학 심리상담과 \n B대학원 심리상담 석사과정',
+            'user_type' : '1'
+        }
+
+        response= self.client.put('/users/'+str(self.user_id)+'/',json.dumps(data), content_type='application/json')
+        print(response.data)
+        self.assertEqual(response.status_code,200)
