@@ -169,11 +169,36 @@ class Text_extract_wordcloud(APIView):
             try:
                 diary_obj = Diary.objects.get(id=diary_id)
             except:
-                diary_obj.delete()
                 return Response("Diary not Found", status=status.HTTP_400_BAD_REQUEST)
             
+            diary_obj.delete()
             return Response("Diary was deleted", status=status.HTTP_200_OK)
+    def put(self,request,**kwargs):
+            """
+            감정일기 수정
 
+            ---
+            # /diaries/<id:int>/
+            ## headers
+                - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
+
+            """
+            if request.user.user_type != '0':
+                return Response("Only Client can modify Task", status=status.HTTP_403_FORBIDDEN)
+
+            if kwargs.get('id') is None:
+                return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
+            else:
+                diary_id = kwargs.get('id')
+                try:
+                    diary_obj = Diary.objects.get(id=diary_id)
+                except:
+                    return Response("Diary not Found", status=status.HTTP_400_BAD_REQUEST)
+
+                content = request.data.get("content")
+                diary_obj.content= content
+                diary_obj.save()
+                return Response("Diary was updated", status=status.HTTP_200_OK)
 class Whole_content_to_wordcloud(APIView):
     """
     워드클라우드 생성
