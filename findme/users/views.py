@@ -19,6 +19,8 @@ from django.core.exceptions import ValidationError
 from .token import account_activation_token
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_text,force_bytes
+
+
 class Activate(APIView):
     def get(self,request, uidb64, token):
         print("activate in VIEW")
@@ -155,20 +157,18 @@ class PasswordReset(APIView):
             - new_password2 : 새비밀번호2
 
         """
-        print(request.POST.get("origin_password"))
-        print(request.POST.get("new_password1"))
-        print(request.POST.get("new_password2"))
+        body = json.loads(request.body.decode('utf-8'))
         context= {}
-        current_password = request.POST.get("origin_password")
+        current_password = body["origin_password"]
         user = request.user
-        if check_password(current_password,user.password):
-            new_password = request.POST.get("new_password1")
-            password_confirm = request.POST.get("new_password2")
+        if check_password(current_password, user.password):
+            new_password = body["new_password1"]
+            password_confirm = body["new_password2"]
             if new_password == password_confirm:
                 user.set_password(new_password)
                 user.save()
                 return Response("User was Password Updated", status=status.HTTP_200_OK)
             else:
-                return Response("Does not match Password1 and Password2 ", status=status.HTTP_400_OK)
+                return Response("Does not match Password1 and Password2 ", status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response("Wrong password", status=status.HTTP_403_FORBIDDEN)
