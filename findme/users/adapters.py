@@ -32,7 +32,7 @@ class CustomUserAccountAdapter(DefaultAccountAdapter):
         user_field(user, 'career', request.data.get('career'))
         user.save()
         currnet_site =get_current_site(request)
-        domain = "localhost:8000"
+        domain = "http://ec2-13-209-32-113.ap-northeast-2.compute.amazonaws.com/"
         uidb64 = urlsafe_base64_encode(force_bytes(user.email))
         token = account_activation_token.make_token(user)
         message_data= message(domain,uidb64,token)
