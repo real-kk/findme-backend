@@ -18,15 +18,11 @@ class UserTest(TestCase):
         self.user.save()
         self.user_id = self.user.id
         token, created = Token.objects.get_or_create(user=self.user)                
+
         self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
 
-    # 이메일 중복 test
-    def test_redundant_check(self):
-        response = self.client.get('/users/email',data={'email':'rlaa@gmail.com'})
-        self.assertEqual(response.status_code, 403) 
-
     # 회원가입 test
-    def test_user_registration(self):
+    def test_A_user_registration(self):
         file = tempfile.NamedTemporaryFile(suffix='.png')
         image_mock= ImageFile(file, name=file.name)
         regi_info ={
@@ -40,8 +36,14 @@ class UserTest(TestCase):
         response= self.client.post('/rest-auth/registration/',data=regi_info)
         self.assertEqual(response.status_code,201)
         self.assertEqual(len(response.json().get("key"))>10,True)
+    # 이메일 중복 test
+    def test_B_redundant_check(self):
+        response = self.client.get('/users/email',data={'email':'rlaa@gmail.com'})
+        self.assertEqual(response.status_code, 403) 
+
+
     #로그인 test
-    def test_user_login(self):
+    def test_C_user_login(self):
         #smoke test
         login_info={
             'email' : 'rlaa@gmail.com',
@@ -53,7 +55,7 @@ class UserTest(TestCase):
         self.assertEqual(len(response.json().get("key"))>10,True)
 
     #유저정보 업데이트 test 
-    def test_user_information_update(self):
+    def test_D_user_information_update(self):
         file = tempfile.NamedTemporaryFile(suffix='.png')
         image_mock= ImageFile(file, name=file.name)
 
@@ -63,7 +65,9 @@ class UserTest(TestCase):
             'career'   : 'A대학 심리상담과 \n B대학원 심리상담 석사과정',
             'user_type' : '1'
         }
-
         response= self.client.put('/users/'+str(self.user_id)+'/',json.dumps(data), content_type='application/json')
-        print(response.data)
         self.assertEqual(response.status_code,200)
+
+    def test_E_get_user_info(self):
+        response= self.client.get('/users/selfinfos/')
+        self.assertTrue(0 <= response.data['id'])
