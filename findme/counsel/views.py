@@ -49,7 +49,6 @@ class Counsel_application(APIView):
         ## headers
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
         """
-        print(Counsel.objects.values().all())
         if request.user.user_type=="1":
             counsel = Counsel.objects.filter(counselor_id=request.user.id)
 
