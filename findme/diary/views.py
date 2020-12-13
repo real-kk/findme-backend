@@ -166,12 +166,9 @@ class Text_extract_wordcloud(APIView):
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
         else:
             diary_id = kwargs.get('id')
-            try:
-                diary_obj = Diary.objects.get(id=diary_id)
-            except:
-                diary_obj.delete()
-                return Response("Diary not Found", status=status.HTTP_400_BAD_REQUEST)
-            
+            diary_obj = Diary.objects.get(id=diary_id)
+            diary_obj.delete()
+            #return Response("Diary not Found", status=status.HTTP_400_BAD_REQUEST)
             return Response("Diary was deleted", status=status.HTTP_200_OK)
 
 class Whole_content_to_wordcloud(APIView):
