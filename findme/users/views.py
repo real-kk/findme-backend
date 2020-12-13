@@ -23,7 +23,6 @@ from django.utils.encoding import force_text,force_bytes
 
 class Activate(APIView):
     def get(self,request, uidb64, token):
-        print("activate in VIEW")
         try:
             email= force_text( urlsafe_base64_decode(uidb64))
             user = User.objects.get(email=email)
@@ -133,8 +132,8 @@ class UserInfo(APIView):
             except:
                 return Response("User not Found", status=status.HTTP_400_BAD_REQUEST)
             user_obj.introduce = request.data.get("introduce")
-            #user_obj.image = request.data.get("image")
-            user_obj.image.save("user" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".jpg", request.data.get("image"))
+            if request.data.get('image') is not None:
+                user_obj.image.save("user" + datetime.now().strftime('%Y-%m-%d_%H%M%S') + ".jpg", request.data.get("image"))
             user_obj.username = request.data.get("username")
             user_obj.user_type = request.data.get("user_type")
             user_obj.career = request.data.get('career')
