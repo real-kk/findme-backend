@@ -62,11 +62,10 @@ class Counsel_application(APIView):
         신청서 삭제
 
         ---
-        # /counsels/<id:int>/
+        # /counsels/<id:int>/?counsel_date_id=
         ## headers
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
         """
-
         if kwargs.get('id') is None:
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -74,11 +73,31 @@ class Counsel_application(APIView):
             counsel_id = kwargs.get('id')
             try:
                 counsel_obj = Counsel.objects.get(id=counsel_id)
+                
+
             except:
                 return Response("Counsel not found", status=status.HTTP_400_BAD_REQUEST)
+
             if str(counsel_obj.counselor)== str(request.user.email):
-                counsel_obj.delete()
-                return Response("Counsel was deleted", status=status.HTTP_200_OK)
+                #parameter로 받아온 counseldate 의 id값으로 해당 counseldate 에 데이터 넣어주기
+                if request.query_params.get('counsel_date_id')=='-1':
+                    counsel_obj.delete()
+                    return Response("Counsel was deleted", status=status.HTTP_200_OK)
+
+                else:
+                    counseldate = RegisterCounselDate.objects.get(id= int(request.query_params.get('counsel_date_id')))
+                    counseldate.counselor= counsel_obj.counselor
+                    counseldate.client=counsel_obj.client
+                    counseldate.major=counsel_obj.major
+                    counseldate.student_number=counsel_obj.student_number
+                    counseldate.phone_number=counsel_obj.phone_number
+                    counseldate.time_table=counsel_obj.time_table
+                    counseldate.content=counsel_obj.content
+                    counseldate.save()
+                    counsel_obj.delete()
+                    return Response("Counsel was deleted", status=status.HTTP_200_OK)
+
+            
             else:
                 return Response("Can only Delete your own counsel applications",status=status.HTTP_403_FORBIDDEN)
 
