@@ -18,7 +18,7 @@ class DiaryListSerializer(serializers.ModelSerializer):
     create_date = serializers.SerializerMethodField()
 
     def get_create_date(self, obj):
-        return obj.create_date.astimezone(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M')
+        return obj.create_date.astimezone(timezone('Asia/Seoul')).strftime('%Y-%m-%d')
     class Meta:
         model = Diary
         fields = ('id','title', 'create_date', 'content')
