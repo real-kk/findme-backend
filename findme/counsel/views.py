@@ -65,6 +65,9 @@ class Counsel_application(APIView):
         # /counsels/<id:int>/?counsel_date_id=
         ## headers
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
+        ## query parameter
+            - counsel_date_id : 신청 수락시 상담 id, 신청 보류시 -1
+
         """
         if kwargs.get('id') is None:
             return Response('invalid request', status=status.HTTP_400_BAD_REQUEST)
