@@ -152,8 +152,7 @@ class TaskVideoTest(TestCase):
     def test_c_task_video_processing_upload(self):
         url ="/tasks/process_videos/"+str(self.task_id)+"/"
         response =self.client.get(url)
-        self.assertEqual("https://processed-video-lambda." in response.data,True)
-        self.assertEqual(response.status_code,200)
+        self.assertEqual("Processed Video is not exist" in response.data,True)
 
         
     def test_d_task_video_delete(self):
