@@ -21,6 +21,7 @@ from PIL import Image
 import requests
 import numpy as np
 
+
 def make_wordcloud(text):
     mecab = Mecab()
     text = re.compile('[|ㄱ-ㅎ|ㅏ-ㅣ]+').sub("", text)
@@ -178,6 +179,9 @@ class Text_extract_wordcloud(APIView):
             ## headers
                 - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
 
+            ## body parameter
+                - content : 수정될 내용
+
             """
             if request.user.user_type != '0':
                 return Response("Only Client can modify Task", status=status.HTTP_403_FORBIDDEN)
@@ -196,24 +200,37 @@ class Text_extract_wordcloud(APIView):
                 diary_obj.save()
                 return Response("Diary was updated", status=status.HTTP_200_OK)
 class Whole_content_to_wordcloud(APIView):
-    """
-    워드클라우드 생성
 
-    ---
-    # /whole_content/
-    ## headers
-        - Authorization : Token "key 값" 
-    """
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        """
+        워드클라우드 생성
+
+        ---
+        # /whole_content/
+        ## headers
+            - Authorization : Token "key 값" 
+        """
+
         exist_status, data = create_wordcloud_result(request, request.user)
         if exist_status == '200':
             return Response(data,status=status.HTTP_201_CREATED)
         return Response(data, status=status.HTTP_200_OK)
         
     def get(self, request):
+        """
+        워드클라우드 조회
+
+        ---
+        # /whole_content/
+        ## headers
+            - Authorization : Token "key 값" 
+        ## body parameter
+            - client : 내담자 이메일
+
+        """
         client_email = request.GET.get('client')
         client = User.objects.get(email=client_email)
         exist_status, data = create_wordcloud_result(request, client)
@@ -222,22 +239,35 @@ class Whole_content_to_wordcloud(APIView):
         return Response(data, status=status.HTTP_200_OK) 
 
 class Text_extract_linegraph(APIView):
-    """
-    꺾은선그래프 생성
-
-    ---
-    # /linegraph
-    ## headers
-        - Authorization : Token "key 값" 
-    """
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        """
+        꺾은선그래프 생성
+
+        ---
+        # /linegraph/
+        ## headers
+            - Authorization : Token "key 값" 
+            
+        """
+
         data = create_linegraph_result(request, request.user)
         return Response(data,status=status.HTTP_201_CREATED)
         
     def get(self, request):
+        """
+        꺾은선그래프 조회
+
+        ---
+        # /linegraph/
+        ## headers
+            - Authorization : Token "key 값" 
+        ## body parameter
+            - client : 내담자 이메일
+
+        """
         client_email = request.GET.get('client')
         client = User.objects.get(email=client_email)
         data = create_linegraph_result(request, client)
