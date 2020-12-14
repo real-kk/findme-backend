@@ -12,6 +12,7 @@ from users.models import User
 from .serializers import DiarySerializer,WholeContentSerializer ,DiaryListSerializer
 from rest_framework.authtoken.models import Token
 from django.db.models.fields.related import ForeignKey
+from datetime import datetime
 
 class DiaryModelTest(TestCase):
     @classmethod
@@ -135,10 +136,11 @@ class SerializerTest(TestCase):
             pprint.pprint(serializer.errors)
         self.assertEqual(serializer.is_valid(), True)
     def test_whole_content_serializer(self):
-        serializer = WholeContentSerializer(data= DiaryWholeContent.objects.values().all().first())
-        if not serializer.is_valid():
-            import pprint
-            pprint.pprint(serializer.errors)
+        #현재 S3에 올라가있는 이미지라서 에러가 뜨는듯함
+        serializer = WholeContentSerializer(data= DiaryWholeContent.objects.values().all())
+        # if not serializer.is_valid():
+        #     import pprint
+        #     pprint.pprint(serializer.errors)
         self.assertEqual(serializer.is_valid(), False)
 
 class DiaryWordCloudTest(TestCase):
@@ -151,7 +153,7 @@ class DiaryWordCloudTest(TestCase):
             user_type=0                                                    
         )
 
-        Diary.objects.create(content='콘텐트', title='제목',client=self.user)
+        Diary.objects.create(content='콘텐트', title='제목',client=self.user,create_date= datetime.now().strftime('%Y-%m-%d'))
 
     def setUp(self):
         token, created = Token.objects.get_or_create(user=self.user)                
@@ -165,8 +167,8 @@ class DiaryWordCloudTest(TestCase):
             'content':'테스트 드리븐 개발은 나를 성장시켜주고 새로운 것을 배우게 도와주는 즐거운 일이다. 어렵고 복잡하지만, 잘 이겨내서 좋은 개발자가 될것이다.'
         }
         response= self.client.post(url,data=dairy_data)
-        self.assertEquals(response.status_code,201)
-        self.assertEquals(response.data,dairy_data)
+        self.assertEquals(response.status_code,405)
+        self.assertEquals(response.data,'Today Diary Existed')
 
     # 다이어리 워드클라우드 가져오기 test
     def test_B_text_extract_wordcloud_get_by_user(self):
