@@ -23,6 +23,15 @@ from django.utils.encoding import force_text,force_bytes
 
 class Activate(APIView):
     def get(self,request, uidb64, token):
+        """
+        이메일 인증 기능
+
+        ---
+        # /users/email/
+        ## query parameter
+            - email : 중복 체크하려는 이메일
+        """
+
         try:
             email= force_text( urlsafe_base64_decode(uidb64))
             user = User.objects.get(email=email)
