@@ -73,7 +73,7 @@ class Review_upload(APIView):
         리뷰 삭제
 
         ---
-        # /counsels/<id:int>/
+        # /reviews/<id:int>/
         ## headers
             - Authorization : Token "key 값" [ex> Token 822a24a314dfbc387128d82af6b952191dd71651]
         """
