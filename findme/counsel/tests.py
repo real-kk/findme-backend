@@ -117,6 +117,8 @@ class CounselApplicationTest(TestCase):
         self.counsel_id = Counsel.objects.values().first()['id']
     
     def setUp(self):
+        RegisterCounselDate.objects.create(client=self.user_client,counselor=self.user_counselor)
+
         # token, created = Token.objects.get_or_create(user=self.user_client)                
         token, created = Token.objects.get_or_create(user=self.user_counselor)                
         self.client = Client(HTTP_AUTHORIZATION='Token ' + token.key)
@@ -163,13 +165,23 @@ class CounselApplicationTest(TestCase):
 
 
 
-    # 상담 신청서 삭제 test  // token 을 counselor 로 해야함
-    def test_D_text_application_delete(self):
+    # 상담 신청서 삭제(상담보류) test  // token 을 counselor 로 해야함
+    def test_D_text_application_delete_when_reject(self):
         url='/counsels/'
         kwargs=str(Counsel.objects.values().first()["id"])
-        response= self.client.delete(url+kwargs+'/',content_type='application/json')
+        response= self.client.delete(url+kwargs+'/?counsel_date_id=-1',content_type='application/json')
         self.assertEqual(response.status_code,200)
         self.assertEqual(response.data,'Counsel was deleted')
+    # 상담 신청서 삭제(상담수락) test  // token 을 counselor 로 해야함
+    def test_E_text_application_delete_when_approved(self):
+        url='/counsels/'
+        kwargs=str(Counsel.objects.values().first()["id"])
+        register_counsel_date_id= str(RegisterCounselDate.objects.values().first()["id"])
+
+        response= self.client.delete(url+kwargs+'/?counsel_date_id='+register_counsel_date_id,content_type='application/json')
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.data,'Counsel was deleted')
+
 
 
 class CounselPhotoTest(TestCase):
