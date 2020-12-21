@@ -11,8 +11,11 @@
 
 
 # 프로젝트 설계 
+ **프론트 - IOS / ANDROID 모두 구현하도록 크로스 플랫폼 ReactNaive 를 이용해서 구현하였다.
+ 백엔드 - 빠르고 안정되고 저렴한 서버를 구축하기 위해 Amazon AWS의 주요 서비스들을 적극 도입하였다. 감정 분석을 위해 Google AZURE 를 이용하였다. Docker 를 이용해 API 배포를 무중단화 시켰다.**
 ![계획,설계](https://user-images.githubusercontent.com/49577850/102771212-e0dc8280-43c8-11eb-9f21-f5faa62cd1c6.png)
 
 # TDD 활용
  **90% 이상의 Test Coverage를 가져가며 서비스의 안정성을 향상시켜 개발하였다.
  Django에서는 Python 의 Unit Teet 기반의 TestCase클래스를 제공한다. 이를 상속시켜 FindMe 서비스를 개발하며 테스를 자동화 하였다**
+ 
