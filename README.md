@@ -45,3 +45,8 @@
   **90% 이상의 Test Coverage를 가져가며 서비스의 안정성을 향상시켜 개발하였다.
  Django에서는 Python 의 Unit Teet 기반의 TestCase클래스를 제공한다. 이를 상속시켜 FindMe 서비스를 개발하며 테스를 자동화 하였다**
  
+
+---
+# 애자일 활용
+  **빠르고 효율적인 개발 협업을 위해 팀내에서 BackLog, BurndownChart등을 작성했다.
+ 
